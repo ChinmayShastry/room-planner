@@ -42,25 +42,21 @@ dashboard settings.
 Pull requests get their own preview URL. To roll back, publish an earlier deploy from the
 [deploys page](https://app.netlify.com/projects/plan-my-room/deploys) — every build is kept.
 
-### Gotcha: contributor verification on private repos
+### If you ever make this repository private again
 
-This repository is private and the Netlify account is on the free plan, which enables **strict
-contributor verification**. Netlify matches the **commit author's email** against verified members of
-the Netlify team and blocks anything it cannot match:
+A private repo on Netlify's free plan turns on **strict contributor verification**, which matches the
+commit author's email against verified members of the Netlify team and blocks anything it cannot
+place:
 
 > Build blocked: This commit is from an unrecognized Git contributor.
 
-The catch is that GitHub's privacy address (`<id>+<user>@users.noreply.github.com`) does not match
-the email on the Netlify account, so every push is rejected — and once the repo is linked this
-applies to manual uploads too, not just pushes. Commits here therefore use the email registered with
-Netlify:
+GitHub's privacy address (`<id>+<user>@users.noreply.github.com`) does not match the email on the
+Netlify account, so every build is rejected — pushes *and* manual uploads, since an uploaded deploy
+carries no commit to verify at all. The repository is public, so none of this currently applies, and
+commits use the privacy address to keep personal email out of a public history.
 
-```bash
-git config user.email you@example.com   # repo-local, matching your Netlify account
-```
-
-The other ways out are making the repository public, which lifts the restriction entirely, or moving
-off the free plan.
+Going private again means either putting the Netlify account email in commits (which a public history
+would then expose) or moving off the free plan.
 
 ### Moving to a custom domain
 
