@@ -24,7 +24,7 @@ import {
 } from '@lib/planner/state';
 import { clamp } from '@lib/planner/units';
 import { LIMITS } from '@lib/planner/types';
-import type { FurnitureItem, MeasureLine, PlannerState, Vec2 } from '@lib/planner/types';
+import type { FurnitureItem, MeasureLine, PlannerState, Room, Vec2 } from '@lib/planner/types';
 
 export type { Selection, Viewport };
 
@@ -366,9 +366,26 @@ export class PlannerEngine {
     this.options.onDirty?.();
   }
 
-  replaceState(next: PlannerState, reason: string, opts: { resetView?: boolean } = {}): void {
+  /**
+   * Swap the whole document — loading a template, opening a saved layout,
+   * importing a file, starting a new room.
+   *
+   * `keepHistory` is the default and matters: without it, one curious click on
+   * a template silently destroyed an arranged room with no way back, because
+   * the undo stack was reset and autosave overwrote the stored copy moments
+   * later. Pushing the swap onto the stack instead makes it plain Ctrl+Z.
+   *
+   * Only the very first load (nothing to lose yet) resets the stack.
+   */
+  replaceState(
+    next: PlannerState,
+    reason: string,
+    opts: { resetView?: boolean; keepHistory?: boolean } = {},
+  ): void {
     this.state = next;
-    this.history.reset(next, reason);
+    if (opts.keepHistory === false) this.history.reset(next, reason);
+    else this.history.push(next, reason);
+
     this.selection = null;
     this.measure = null;
     this.measureDraft = null;
@@ -381,6 +398,7 @@ export class PlannerEngine {
     this.options.onSelectionChange?.(null);
     this.options.onStateChange?.(this.state, reason);
     this.options.onHistoryChange?.(this.history.canUndo, this.history.canRedo);
+    this.options.onDirty?.();
   }
 
   select(selection: Selection | null): void {
@@ -397,30 +415,41 @@ export class PlannerEngine {
     return this.state.furniture.find((f) => f.id === this.selection?.id) ?? null;
   }
 
-  undo(): void {
-    const next = this.history.undo();
-    if (!next) return;
+  /**
+   * Shared tail for undo and redo.
+   *
+   * A history step can now cross a whole-document swap, so the room itself may
+   * be a different size than the one on screen. When that happens the view is
+   * re-fitted, otherwise the restored room would land off-screen or at a
+   * nonsensical zoom.
+   */
+  private applyHistoryStep(next: PlannerState, previousRoom: Room, reason: 'undo' | 'redo'): void {
+    const roomChanged =
+      next.room.width !== previousRoom.width || next.room.height !== previousRoom.height;
+
     this.state = next;
     this.ensureSelectionExists();
     this.recomputeDerived();
+    if (roomChanged) this.fit();
     this.requestRender();
-    this.options.onStateChange?.(this.state, 'undo');
+    this.options.onStateChange?.(this.state, reason);
     this.options.onHistoryChange?.(this.history.canUndo, this.history.canRedo);
     this.options.onSelectionChange?.(this.selection);
     this.options.onDirty?.();
   }
 
+  undo(): void {
+    const previousRoom = this.state.room;
+    const next = this.history.undo();
+    if (!next) return;
+    this.applyHistoryStep(next, previousRoom, 'undo');
+  }
+
   redo(): void {
+    const previousRoom = this.state.room;
     const next = this.history.redo();
     if (!next) return;
-    this.state = next;
-    this.ensureSelectionExists();
-    this.recomputeDerived();
-    this.requestRender();
-    this.options.onStateChange?.(this.state, 'redo');
-    this.options.onHistoryChange?.(this.history.canUndo, this.history.canRedo);
-    this.options.onSelectionChange?.(this.selection);
-    this.options.onDirty?.();
+    this.applyHistoryStep(next, previousRoom, 'redo');
   }
 
   get canUndo(): boolean {

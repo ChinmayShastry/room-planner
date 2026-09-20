@@ -36,7 +36,32 @@ const organization = {
   description: 'Free online room planner for arranging furniture on a 2D floor plan.',
 };
 
-const allSchema = [organization, ...schema];
+/**
+ * Breadcrumbs for every page below the root. The site is flat, so this is a
+ * two-level trail — enough for Google to render "Room Planner > Bedroom
+ * Planner" in place of a bare URL, and enough for an assistant to place the
+ * page within the site.
+ */
+const isHome = path === '/' || path === '';
+const breadcrumb = isHome
+  ? null
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Room Planner', item: `${siteUrl}/` },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          // Strip the schema wrapper off the page title: "Bedroom Planner –
+          // Plan Your..." becomes just "Bedroom Planner".
+          name: title.split(/\s+[–|-]\s+/)[0]?.trim() || title,
+          item: canonicalUrl,
+        },
+      ],
+    };
+
+const allSchema = [organization, ...(breadcrumb ? [breadcrumb] : []), ...schema];
 ---
 
 <!doctype html>

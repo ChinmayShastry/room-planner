@@ -365,16 +365,25 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
     });
   }
 
+  /**
+   * Replacing the whole document is undoable, but that is only reassuring if
+   * people know it. Say so — and only when there was actually work to lose.
+   */
+  function undoHint(base: string): string {
+    return engine.state.furniture.length > 0 ? `${base} · Ctrl+Z to go back` : base;
+  }
+
   // ------------------------------------------------------------- templates
   for (const button of $$(root, '[data-template]')) {
     button.addEventListener('click', () => {
       const id = button.dataset.template!;
       const state = buildTemplateState(id);
       if (!state) return;
+      const hint = undoHint(`${state.room.name} template loaded`);
       engine.replaceState(state, 'Template');
       currentLayoutId = null;
       queueAutosave();
-      toast(`${state.room.name} template loaded`, 'ok');
+      toast(hint, 'ok');
       trackEvent('template_selected', { template: id });
       closeMobilePanels();
     });
@@ -438,11 +447,12 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
     showFieldError(setupForm, 'length', result.errors.length);
     if (!result.ok || !result.room) return;
 
+    const newRoomHint = undoHint('Room created. Add furniture from the left panel.');
     engine.replaceState(createState(result.room, engine.state.settings), 'New room');
     currentLayoutId = null;
     queueAutosave();
     closeSetup();
-    toast('Room created. Add furniture from the left panel.', 'ok');
+    toast(newRoomHint, 'ok');
     trackEvent('room_created', { unit, width_in: result.room.width, height_in: result.room.height });
   });
 
@@ -509,7 +519,7 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
 
   on(roomInputs.floor, 'change', () => {
     const value = roomInputs.floor?.value as PlannerState['room']['floorColor'];
-    engine.commit('Floor colour', (state) => {
+    engine.commit('Floor color', (state) => {
       state.room.floorColor = value;
     });
   });
@@ -573,7 +583,7 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
 
   for (const button of $$(root, '[data-color]')) {
     button.addEventListener('click', () => {
-      engine.updateSelectedItem({ color: button.dataset.color! }, 'Change colour');
+      engine.updateSelectedItem({ color: button.dataset.color! }, 'Change color');
     });
   }
 
@@ -701,11 +711,12 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
       const layouts = listLayouts();
       const match = layouts.find((l) => l.id === openId);
       if (!match) return;
+      const openHint = undoHint(`Opened “${match.name}”`);
       engine.replaceState(match.state, 'Open layout');
       currentLayoutId = match.id;
       if (layoutName) layoutName.value = match.name;
       queueAutosave();
-      toast(`Opened “${match.name}”`, 'ok');
+      toast(openHint, 'ok');
       trackEvent('layout_opened');
       closeMobilePanels();
       return;
@@ -749,11 +760,12 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
         toast(result.error, 'warn');
         return;
       }
+      const importHint = undoHint(`Imported “${result.name}”`);
       engine.replaceState(result.state, 'Import');
       currentLayoutId = null;
       if (layoutName) layoutName.value = result.name;
       queueAutosave();
-      toast(`Imported “${result.name}”`, 'ok');
+      toast(importHint, 'ok');
       trackEvent('layout_imported', { items: result.state.furniture.length });
       closeMobilePanels();
     };

@@ -7,7 +7,7 @@ import type { FaqItem, GuideSection } from '../lib/content';
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const title = 'Room Layout Planner – Draw a Floor Plan and Test Layouts';
 const description =
-  'Draw a room layout online free. Set dimensions in feet or metres, add doors and windows, position furniture to scale, and compare layouts before you move anything.';
+  'Draw a room layout online free. Set dimensions in feet or meters, add doors and windows, position furniture to scale, and compare layouts before you move anything.';
 
 const guide: GuideSection[] = [
   GUIDE_SECTIONS.whatIs!,
@@ -49,7 +49,7 @@ const faq: FaqItem[] = [
       'Not yet. The planner handles rectangular rooms, which covers the large majority of bedrooms, offices and living rooms. For an L-shaped space, a practical workaround is to plan the main rectangle and place the furniture that belongs in the alcove at its edge.',
   },
   {
-    question: 'Can I switch between feet and metres?',
+    question: 'Can I switch between feet and meters?',
     answer:
       'Yes, at any time. Change the unit in the Room panel and every measurement on screen updates. The underlying dimensions never change, so switching back and forth does not introduce rounding errors.',
   },
@@ -82,7 +82,7 @@ const faq: FaqItem[] = [
 >
   <PlannerLanding
     heading="Room layout planner"
-    intro="Draw any rectangular room to scale, add the doors and windows, then test layouts until one works. Switch between feet, metres, inches and centimetres whenever you like."
+    intro="Draw any rectangular room to scale, add the doors and windows, then test layouts until one works. Switch between feet, meters, inches and centimeters whenever you like."
     template="dining-room"
     ctaLabel="Draw my room"
     checklist={[

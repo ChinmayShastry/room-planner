@@ -12,18 +12,18 @@ import { UNITS } from '../lib/planner/types';
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const title = 'Room Size Calculator – Area, Perimeter and Rug Size';
 const description =
-  'Calculate room area and perimeter in feet, metres, inches or centimetres. Get flooring quantity with a waste allowance and a suggested rug size for your room.';
+  'Calculate room area and perimeter in feet, meters, inches or centimeters. Get flooring quantity with a waste allowance and a suggested rug size for your room.';
 
 const faq: FaqItem[] = [
   {
     question: 'How do I calculate the area of a room?',
     answer:
-      'Multiply the width by the length. A 12 × 14 ft room is 168 sq ft. This calculator does it for you and converts between units, which is handy when a room is measured in feet but flooring is sold in square metres.',
+      'Multiply the width by the length. A 12 × 14 ft room is 168 sq ft. This calculator does it for you and converts between units, which is handy when a room is measured in feet but flooring is sold in square meters.',
   },
   {
     question: 'How do I calculate the perimeter of a room?',
     answer:
-      'Add up all four walls: (width + length) × 2. A 12 × 14 ft room has a 52 ft perimeter. That is the figure you need for skirting board, coving or a border.',
+      'Add up all four walls: (width + length) × 2. A 12 × 14 ft room has a 52 ft perimeter. That is the figure you need for baseboard, crown molding or a border.',
   },
   {
     question: 'Why does the flooring figure include extra?',

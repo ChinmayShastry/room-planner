@@ -35,7 +35,7 @@ export const GENERAL_FAQ: FaqItem[] = [
   {
     question: 'Can I move furniture around?',
     answer:
-      'Drag any item with a mouse, finger or stylus. You can also select an item and use the arrow keys, or type exact X and Y positions, which is often faster than dragging on a phone.',
+      'Yes. Drag any item with a mouse, finger or stylus. You can also select an item and nudge it with the arrow keys, or type exact X and Y positions, which is often faster than dragging on a phone.',
   },
   {
     question: 'Can I save my room layout?',
@@ -50,7 +50,7 @@ export const GENERAL_FAQ: FaqItem[] = [
   {
     question: 'Can I download my room plan?',
     answer:
-      'You can download your plan as a PNG image or an SVG file, and export the layout itself as a JSON file that you can import again later.',
+      'Yes. You can download your plan as a PNG image or an SVG file, and export the layout itself as a JSON file that you can import again later.',
   },
   {
     question: 'Can I print my room plan?',
@@ -60,7 +60,7 @@ export const GENERAL_FAQ: FaqItem[] = [
   {
     question: 'Are the measurements accurate?',
     answer:
-      'The plan is exactly as accurate as the dimensions you enter. Room Planner does the arithmetic faithfully, but it cannot check your tape measure. Measure wall to wall, and always confirm critical dimensions before buying furniture or making building decisions.',
+      'The plan is exactly as accurate as the dimensions you enter. Room Planner does the arithmetic faithfully, but it cannot check your tape measure. Measure wall to wall at floor level, and always confirm critical dimensions before buying furniture or making building decisions.',
   },
 ];
 
@@ -112,7 +112,7 @@ export const GUIDE_SECTIONS: Record<string, GuideSection> = {
     id: 'arrange-a-small-bedroom',
     title: 'How to arrange furniture in a small bedroom',
     body: [
-      'In a small bedroom, the win is usually giving up one walkway rather than shrinking the furniture. Pushing a single bed lengthways against a wall can free a metre of usable floor.',
+      'In a small bedroom, the win is usually giving up one walkway rather than shrinking the furniture. Pushing a single bed lengthways against a wall can free a meter of usable floor.',
     ],
     points: [
       'Put the bed in a corner if only one person uses it.',
@@ -139,7 +139,7 @@ export const GUIDE_SECTIONS: Record<string, GuideSection> = {
     id: 'how-to-measure-a-room',
     title: 'How to measure a room before buying furniture',
     body: [
-      'Measure wall to wall at floor level, because skirting boards, radiators and bay windows all make a room narrower than it looks. Measure each wall separately: very few rooms are truly rectangular.',
+      'Measure wall to wall at floor level, because baseboards, radiators and bay windows all make a room narrower than it looks. Measure each wall separately: very few rooms are truly rectangular.',
     ],
     points: [
       'Write down width and length in the same unit, and note which is which.',
@@ -157,7 +157,7 @@ export const GUIDE_SECTIONS: Record<string, GuideSection> = {
     ],
     points: [
       'Check the footprint against the room, including the space you need to use it.',
-      'Check the narrowest opening on the route in: doorways, stair turns, and lift doors.',
+      'Check the narrowest opening on the route in: doorways, stair turns, and elevator doors.',
       'Remember that feet, handles and packaging add an inch or two.',
       'Try the Will It Fit? calculator for a quick answer on both questions.',
     ],

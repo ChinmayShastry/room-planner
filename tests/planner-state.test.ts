@@ -540,3 +540,50 @@ describe('svg export', () => {
     expect(svg).toContain('&lt;script&gt;');
   });
 });
+
+// ------------------------------------------------- document swaps and undo
+
+describe('swapping the whole document', () => {
+  /**
+   * Regression guard. Loading a template used to call history.reset(), so one
+   * curious click destroyed an arranged room with no way back — and autosave
+   * overwrote the stored copy moments later. A swap must be an ordinary undo
+   * step like anything else.
+   */
+  it('keeps the previous room recoverable through undo', () => {
+    const history = new History<PlannerState>(buildTemplateState('bedroom')!, {
+      depth: LIMITS.historyDepth,
+    });
+
+    const arranged = history.current;
+    arranged.furniture[0]!.name = 'My arranged bed';
+    history.push(arranged, 'Rename');
+
+    // The swap is pushed, not reset.
+    history.push(buildTemplateState('living-room')!, 'Template');
+    expect(history.current.room.name).toBe('Living Room');
+    expect(history.canUndo).toBe(true);
+
+    const back = history.undo()!;
+    expect(back.room.name).toBe('Bedroom');
+    expect(back.furniture[0]!.name).toBe('My arranged bed');
+  });
+
+  it('can redo back to the swapped-in document', () => {
+    const history = new History<PlannerState>(buildTemplateState('bedroom')!);
+    history.push(buildTemplateState('home-office')!, 'Template');
+    history.undo();
+    expect(history.current.room.name).toBe('Bedroom');
+    expect(history.redo()!.room.name).toBe('Home Office');
+  });
+
+  it('survives repeated swaps without losing the original', () => {
+    const history = new History<PlannerState>(buildTemplateState('bedroom')!);
+    for (const id of ['living-room', 'home-office', 'kids-room', 'studio-apartment']) {
+      history.push(buildTemplateState(id)!, 'Template');
+    }
+    for (let i = 0; i < 4; i += 1) history.undo();
+    expect(history.current.room.name).toBe('Bedroom');
+    expect(history.canUndo).toBe(false);
+  });
+});
