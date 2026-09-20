@@ -33,6 +33,15 @@ Then open http://localhost:4321.
 
 Live at **https://plan-my-room.netlify.app**, hosted on Netlify from this repository.
 
+Pushing to `main` deploys automatically. Netlify runs `npm run build` — which type-checks before it
+builds, so a type error fails the deploy rather than shipping — and publishes `dist/`. Build command,
+publish directory, Node version, cache headers and the CSP all come from
+[`netlify.toml`](netlify.toml), so the deploy is reproducible and reviewable rather than living in
+dashboard settings.
+
+Pull requests get their own preview URL. To roll back, publish an earlier deploy from the
+[deploys page](https://app.netlify.com/projects/plan-my-room/deploys) — every build is kept.
+
 ### Moving to a custom domain
 
 Two files carry the domain. Change both, then redeploy:
