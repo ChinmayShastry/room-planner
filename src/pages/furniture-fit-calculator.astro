@@ -1,0 +1,266 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdSlot from '../components/AdSlot.astro';
+import Faq from '../components/Faq.astro';
+import GuideSections from '../components/GuideSections.astro';
+import Icon from '../components/Icon.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem } from '../lib/content';
+import { UNIT_NAME } from '../lib/planner/units';
+import { UNITS } from '../lib/planner/types';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Will It Fit? Furniture Fit Calculator – Room and Doorway';
+const description =
+  'Check whether furniture fits your room and your doorway. Enter the item size, room size and door width to see if it fits upright, sideways or at an angle.';
+
+const faq: FaqItem[] = [
+  {
+    question: 'How do I know if a sofa will fit through my door?',
+    answer:
+      'Compare the smallest face of the sofa — usually its height or depth, whichever is less — against the clear width of the doorway. If that number is smaller than the opening, it will pass through straight on. Also check every stair turn and hallway corner on the route.',
+  },
+  {
+    question: 'What does "fits at an angle" mean?',
+    answer:
+      'Some long items only fit a room when they are turned diagonally. The calculator sweeps every angle and tells you the smallest one that works. It is a real answer, but a diagonal piece usually leaves awkward space around it.',
+  },
+  {
+    question: 'Should I subtract the door frame?',
+    answer:
+      'Yes. Measure the clear opening with the door open, not the frame outside. A 36 in door frame often gives around 32 to 33 in of actual clear width once the door and stops are accounted for.',
+  },
+  {
+    question: 'Does this account for the height of the item?',
+    answer:
+      'Not directly — this is a 2D check on the footprint and the opening width. For tall items, also compare the item’s height against your ceiling and, if it will be carried upright, against the door height.',
+  },
+  {
+    question: 'Can I see it in the room rather than just a yes or no?',
+    answer:
+      'Yes. Open the room planner, set your room dimensions, and add the item with its real size. You will see exactly how much space is left around it.',
+  },
+];
+
+const stats = [
+  { label: 'Item footprint', out: 'item-area' },
+  { label: 'Room floor area', out: 'room-area' },
+  { label: 'Share of the floor', out: 'floor-share' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/furniture-fit-calculator"
+  schema={[
+    appSchema('Furniture Fit Calculator', description, `${siteUrl}/furniture-fit-calculator`),
+    faqSchema(faq),
+  ]}
+>
+  <section class="rp-container pt-10 pb-6 sm:pt-14">
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Will it fit?</h1>
+      <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+        Two questions, one answer: does the furniture fit in the room, and can it actually get in there.
+        Enter the sizes below.
+      </p>
+    </div>
+  </section>
+
+  <section class="rp-container pb-10" data-calculator="fit">
+    <div class="grid gap-5 lg:grid-cols-2">
+      <form class="rp-card p-5" novalidate>
+        <div class="mb-4">
+          <label class="rp-field" for="fit-unit">Units</label>
+          <select id="fit-unit" class="rp-select" data-calc="unit">
+            {UNITS.map((unit) => <option value={unit} selected={unit === 'ft'}>{UNIT_NAME[unit]}</option>)}
+          </select>
+        </div>
+
+        <fieldset class="mb-4">
+          <legend class="mb-2 text-sm font-semibold text-ink">The furniture</legend>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="rp-field" for="fit-item-width">Width</label>
+              <input
+                id="fit-item-width"
+                class="rp-input"
+                type="number"
+                min="0.1"
+                step="0.25"
+                inputmode="decimal"
+                value="7"
+                data-calc="item-width"
+              />
+            </div>
+            <div>
+              <label class="rp-field" for="fit-item-depth">Depth</label>
+              <input
+                id="fit-item-depth"
+                class="rp-input"
+                type="number"
+                min="0.1"
+                step="0.25"
+                inputmode="decimal"
+                value="3"
+                data-calc="item-depth"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="mb-4">
+          <legend class="mb-2 text-sm font-semibold text-ink">The room</legend>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="rp-field" for="fit-room-width">Width</label>
+              <input
+                id="fit-room-width"
+                class="rp-input"
+                type="number"
+                min="0.1"
+                step="0.25"
+                inputmode="decimal"
+                value="12"
+                data-calc="room-width"
+              />
+            </div>
+            <div>
+              <label class="rp-field" for="fit-room-length">Length</label>
+              <input
+                id="fit-room-length"
+                class="rp-input"
+                type="number"
+                min="0.1"
+                step="0.25"
+                inputmode="decimal"
+                value="14"
+                data-calc="room-length"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="mb-4">
+          <legend class="mb-2 text-sm font-semibold text-ink">The way in</legend>
+          <label class="rp-field" for="fit-door-width">Narrowest doorway (clear opening)</label>
+          <input
+            id="fit-door-width"
+            class="rp-input"
+            type="number"
+            min="0.1"
+            step="0.25"
+            inputmode="decimal"
+            value="2.6"
+            data-calc="door-width"
+          />
+          <p class="mt-1 text-xs text-ink-faint">
+            Measure with the door open, edge to edge. Leave blank to skip this check.
+          </p>
+        </fieldset>
+
+        <button type="submit" class="rp-btn rp-btn-primary w-full">
+          <Icon name="calculator" size={16} />
+          Check the fit
+        </button>
+      </form>
+
+      <div data-out="results">
+        <div class="rp-verdict" data-out="room-verdict"></div>
+        <div class="rp-verdict mt-3" data-out="door-verdict"></div>
+
+        <dl class="mt-3 grid grid-cols-3 gap-2 rounded-lg border border-line bg-surface p-4">
+          {
+            stats.map((stat) => (
+              <div>
+                <dt class="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">{stat.label}</dt>
+                <dd class="mt-0.5 text-base font-semibold text-ink" data-out={stat.out}>
+                  —
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <a href="/room-planner" class="rp-btn rp-btn-secondary mt-3 w-full">
+          See it in the room planner
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="rp-container">
+    <AdSlot slot="fit-below-tool" format="leaderboard" class="mb-10" />
+  </div>
+
+  <GuideSections
+    sections={[
+      GUIDE_SECTIONS.willItFit!,
+      GUIDE_SECTIONS.measuring!,
+      {
+        id: 'route-into-the-room',
+        title: "Check the whole route, not just the door",
+        body: [
+          'The doorway into the room is rarely the tightest point. Front doors, stair turns, lift doors and low ceilings on a half-landing all catch people out, and a sofa cannot be returned once it is wedged.',
+        ],
+        points: [
+          'Measure the front door, any internal doors, and the narrowest hallway.',
+          'On a stair turn, the limiting dimension is usually the diagonal across the landing.',
+          'Check the ceiling height above a staircase for tall items.',
+          'Ask whether the legs come off — it often gains 4 to 6 in.',
+          'If it is close, ask the retailer for the boxed dimensions as well.',
+        ],
+      },
+    ]}
+    adAfter={0}
+  />
+
+  <Faq items={faq} />
+</BaseLayout>
+
+<style is:global>
+  .rp-verdict {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    padding: 1rem 1.125rem;
+  }
+
+  .rp-verdict[data-state='ok'] {
+    border-color: color-mix(in srgb, var(--color-ok) 40%, transparent);
+    background-color: var(--color-ok-soft);
+  }
+
+  .rp-verdict[data-state='warn'] {
+    border-color: color-mix(in srgb, var(--color-warn) 35%, transparent);
+    background-color: var(--color-warn-soft);
+  }
+
+  .rp-verdict-head {
+    font-size: 1.0625rem;
+    font-weight: 650;
+    color: var(--color-ink);
+  }
+
+  .rp-verdict[data-state='ok'] .rp-verdict-head {
+    color: #4b6742;
+  }
+
+  .rp-verdict[data-state='warn'] .rp-verdict-head {
+    color: var(--color-warn);
+  }
+
+  .rp-verdict-detail {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+</style>
+
+<script>
+  import { initCalculators } from '../scripts/calculators';
+  initCalculators();
+</script>

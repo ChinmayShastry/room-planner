@@ -1,0 +1,68 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  /** The demo on the homepage hides the hints and some controls. */
+  demo?: boolean;
+}
+const { demo = false } = Astro.props;
+---
+
+<div class="planner-stage">
+  <div class="rp-canvas-wrap h-full w-full" data-rp="canvas-wrap">
+    <svg
+      id="room-canvas"
+      data-rp="canvas"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMid meet"
+      aria-label="Room floor plan"
+      aria-describedby="canvas-help"
+    ></svg>
+  </div>
+
+  <p id="canvas-help" class="rp-sr-only">
+    Drag furniture to move it. Every object is also listed in the Selected panel, where its size, position
+    and rotation can be typed in directly.
+  </p>
+
+  <!-- Advisory banner. Never blocks the plan: it sits above it and is short. -->
+  <p class="rp-canvas-banner rp-no-print" data-rp="warnings" role="status" aria-live="polite" hidden></p>
+
+  <div class="rp-empty-state rp-no-print" data-rp="empty-state" hidden>
+    <p class="text-lg font-semibold text-ink">Your room is ready.</p>
+    <p class="max-w-xs text-sm leading-relaxed text-ink-soft">Add furniture to start planning.</p>
+    <button type="button" class="rp-btn rp-btn-primary pointer-events-auto mt-1" data-panel-tab="furniture">
+      <Icon name="plus" size={16} />
+      Add furniture
+    </button>
+  </div>
+
+  <div class="rp-canvas-controls rp-no-print">
+    <button type="button" class="rp-icon-btn" data-action="zoom-in" aria-label="Zoom in" title="Zoom in">
+      <Icon name="zoom-in" />
+    </button>
+    <span class="text-center text-[10px] font-semibold tabular-nums text-ink-faint" data-rp="zoom-level">100%</span>
+    <button type="button" class="rp-icon-btn" data-action="zoom-out" aria-label="Zoom out" title="Zoom out">
+      <Icon name="zoom-out" />
+    </button>
+    <button type="button" class="rp-icon-btn" data-action="zoom-fit" aria-label="Fit room to screen" title="Fit to screen">
+      <Icon name="fit" />
+    </button>
+  </div>
+
+  {
+    !demo && (
+      <div class="rp-hints rp-no-print" data-rp="hints">
+        <p class="mb-1.5 text-sm font-semibold text-ink">Three things to try</p>
+        <ol class="mb-2.5 space-y-1 text-[13px] leading-snug text-ink-soft">
+          <li>1. Drag furniture around the room.</li>
+          <li>2. Click an item to change its size.</li>
+          <li>3. Use the toolbar to measure and export.</li>
+        </ol>
+        <button type="button" class="rp-btn rp-btn-secondary w-full" data-action="dismiss-hints">
+          Got it
+        </button>
+      </div>
+    )
+  }
+</div>

@@ -1,0 +1,88 @@
+---
+import '../../styles/planner.css';
+import Icon from '../Icon.astro';
+
+interface Props {
+  template?: string;
+  class?: string;
+}
+
+const { template = 'bedroom', class: className = '' } = Astro.props;
+const config = { template, demo: true, autosave: false };
+---
+
+<div
+  class:list={['overflow-hidden rounded-xl border border-line bg-surface shadow-[var(--shadow-card)]', className]}
+  id="demo-planner"
+  data-planner-config={JSON.stringify(config)}
+>
+  <div class="flex items-center gap-2 border-b border-line bg-surface px-3 py-2">
+    <span class="flex h-6 w-6 items-center justify-center rounded bg-accent-soft text-accent-ink" aria-hidden="true">
+      <Icon name="home" size={14} />
+    </span>
+    <p class="text-sm font-medium text-ink">Bedroom · 12 × 14 ft</p>
+    <p class="ml-auto hidden text-xs text-ink-faint sm:block">Try dragging the bed</p>
+  </div>
+
+  <div class="planner-stage h-[320px] sm:h-[420px] lg:h-[480px]">
+    <div class="rp-canvas-wrap h-full w-full" data-rp="canvas-wrap">
+      <svg
+        data-rp="canvas"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid meet"
+        aria-label="Interactive example bedroom floor plan"
+        aria-describedby="demo-help"
+      ></svg>
+    </div>
+    <p id="demo-help" class="rp-sr-only">
+      An example 12 by 14 foot bedroom. Drag items to rearrange them. This is a preview — open the full
+      planner to create your own room.
+    </p>
+    <div class="rp-canvas-controls">
+      <button type="button" class="rp-icon-btn" data-action="zoom-in" aria-label="Zoom in">
+        <Icon name="zoom-in" size={16} />
+      </button>
+      <button type="button" class="rp-icon-btn" data-action="zoom-out" aria-label="Zoom out">
+        <Icon name="zoom-out" size={16} />
+      </button>
+      <button type="button" class="rp-icon-btn" data-action="zoom-fit" aria-label="Fit to screen">
+        <Icon name="fit" size={16} />
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2 border-t border-line bg-surface-sunk px-3 py-2.5">
+    <p class="mr-auto text-xs text-ink-soft">
+      This is a live preview. Nothing here is saved.
+    </p>
+    <a href="/room-planner" class="rp-btn rp-btn-primary">
+      Create My Room
+      <Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</div>
+
+<script>
+  import { initPlanner } from '../../scripts/planner-ui';
+
+  const demo = document.getElementById('demo-planner');
+  if (demo) {
+    // Defer until the element is actually on screen — the homepage should paint
+    // before it spends any time building a floor plan.
+    const start = () => initPlanner(demo);
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            start();
+          }
+        },
+        { rootMargin: '200px' },
+      );
+      observer.observe(demo);
+    } else {
+      start();
+    }
+  }
+</script>

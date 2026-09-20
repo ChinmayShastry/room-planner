@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdSlot from '../components/AdSlot.astro';
+import Faq from '../components/Faq.astro';
+import GuideSections from '../components/GuideSections.astro';
+import Icon from '../components/Icon.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem } from '../lib/content';
+import { UNIT_NAME } from '../lib/planner/units';
+import { UNITS } from '../lib/planner/types';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Room Size Calculator – Area, Perimeter and Rug Size';
+const description =
+  'Calculate room area and perimeter in feet, metres, inches or centimetres. Get flooring quantity with a waste allowance and a suggested rug size for your room.';
+
+const faq: FaqItem[] = [
+  {
+    question: 'How do I calculate the area of a room?',
+    answer:
+      'Multiply the width by the length. A 12 × 14 ft room is 168 sq ft. This calculator does it for you and converts between units, which is handy when a room is measured in feet but flooring is sold in square metres.',
+  },
+  {
+    question: 'How do I calculate the perimeter of a room?',
+    answer:
+      'Add up all four walls: (width + length) × 2. A 12 × 14 ft room has a 52 ft perimeter. That is the figure you need for skirting board, coving or a border.',
+  },
+  {
+    question: 'Why does the flooring figure include extra?',
+    answer:
+      'Flooring is cut to fit, and the offcuts are waste. A 10% allowance is the usual trade rule for a simple rectangular room. Add more for diagonal or herringbone patterns, or for a room with many alcoves.',
+  },
+  {
+    question: 'What size rug should I get?',
+    answer:
+      'The suggestion here is the largest standard rug that still leaves roughly 18 in of bare floor on every side. In a living room, also check that the front legs of your seating will sit on it.',
+  },
+  {
+    question: 'Does this work for an L-shaped room?',
+    answer:
+      'Not directly. Split the room into two rectangles, calculate each, and add the areas together. For the perimeter, measure the actual walls rather than adding the two perimeters.',
+  },
+];
+
+const outputs = [
+  { label: 'Floor area', out: 'area', hint: 'Width × length' },
+  { label: 'Perimeter', out: 'perimeter', hint: 'All four walls' },
+  { label: 'Diagonal', out: 'diagonal', hint: 'Corner to corner' },
+];
+
+const secondary = [
+  { label: 'Area in sq ft', out: 'area-sqft' },
+  { label: 'Area in m²', out: 'area-sqm' },
+  { label: 'Flooring to buy (+10%)', out: 'flooring' },
+  { label: 'Suggested rug size', out: 'rug' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/room-size-calculator"
+  schema={[
+    appSchema('Room Size Calculator', description, `${siteUrl}/room-size-calculator`),
+    faqSchema(faq),
+  ]}
+>
+  <section class="rp-container pt-10 pb-6 sm:pt-14">
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Room size calculator</h1>
+      <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+        Area, perimeter and the numbers you need when buying flooring, paint or a rug — in whichever unit
+        you measured in.
+      </p>
+    </div>
+  </section>
+
+  <section class="rp-container pb-10" data-calculator="room-size">
+    <div class="grid gap-5 lg:grid-cols-[22rem_minmax(0,1fr)]">
+      <form class="rp-card h-fit p-5" novalidate>
+        <div class="mb-4 grid grid-cols-2 gap-2">
+          <div>
+            <label class="rp-field" for="size-room-width">Width</label>
+            <input
+              id="size-room-width"
+              class="rp-input"
+              type="number"
+              min="0.1"
+              step="0.25"
+              inputmode="decimal"
+              value="12"
+              data-calc="room-width"
+            />
+          </div>
+          <div>
+            <label class="rp-field" for="size-room-length">Length</label>
+            <input
+              id="size-room-length"
+              class="rp-input"
+              type="number"
+              min="0.1"
+              step="0.25"
+              inputmode="decimal"
+              value="14"
+              data-calc="room-length"
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="rp-field" for="size-unit">Units</label>
+          <select id="size-unit" class="rp-select" data-calc="unit">
+            {UNITS.map((unit) => <option value={unit} selected={unit === 'ft'}>{UNIT_NAME[unit]}</option>)}
+          </select>
+        </div>
+
+        <button type="submit" class="rp-btn rp-btn-primary w-full">
+          <Icon name="calculator" size={16} />
+          Calculate
+        </button>
+
+        <a href="/room-planner" class="rp-btn rp-btn-secondary mt-2 w-full">
+          Plan this room
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </form>
+
+      <div data-out="results">
+        <p class="text-sm text-ink-faint">
+          Room size <span class="font-semibold text-ink" data-out="size">—</span>
+        </p>
+
+        <dl class="mt-3 grid gap-2 sm:grid-cols-3">
+          {
+            outputs.map((item) => (
+              <div class="rounded-lg border border-line bg-surface p-4">
+                <dt class="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">{item.label}</dt>
+                <dd class="mt-1 text-2xl font-semibold tracking-tight text-ink" data-out={item.out}>
+                  —
+                </dd>
+                <p class="mt-0.5 text-xs text-ink-faint">{item.hint}</p>
+              </div>
+            ))
+          }
+        </dl>
+
+        <dl class="mt-2 divide-y divide-line rounded-lg border border-line bg-surface">
+          {
+            secondary.map((item) => (
+              <div class="flex items-center justify-between gap-4 px-4 py-2.5">
+                <dt class="text-sm text-ink-soft">{item.label}</dt>
+                <dd class="text-sm font-semibold text-ink" data-out={item.out}>
+                  —
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p class="mt-2 text-xs leading-relaxed text-ink-faint">
+          Figures assume a plain rectangular room. Always allow extra for alcoves, bay windows and
+          diagonal patterns, and confirm quantities with your supplier.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="rp-container">
+    <AdSlot slot="size-below-tool" format="leaderboard" class="mb-10" />
+  </div>
+
+  <GuideSections
+    sections={[
+      GUIDE_SECTIONS.measuring!,
+      {
+        id: 'common-room-areas',
+        title: 'Common room sizes and their areas',
+        body: [
+          'A quick reference for sanity-checking a measurement. If your number is wildly different from these, it is worth measuring again.',
+        ],
+        points: [
+          'Small bedroom, 10 × 10 ft — 100 sq ft (9.3 m²)',
+          'Bedroom, 12 × 14 ft — 168 sq ft (15.6 m²)',
+          'Master bedroom, 14 × 16 ft — 224 sq ft (20.8 m²)',
+          'Home office, 10 × 12 ft — 120 sq ft (11.1 m²)',
+          'Living room, 16 × 20 ft — 320 sq ft (29.7 m²)',
+          'Studio, 20 × 20 ft — 400 sq ft (37.2 m²)',
+        ],
+      },
+      GUIDE_SECTIONS.whatIs!,
+    ]}
+    adAfter={0}
+  />
+
+  <Faq items={faq} />
+</BaseLayout>
+
+<script>
+  import { initCalculators } from '../scripts/calculators';
+  initCalculators();
+</script>

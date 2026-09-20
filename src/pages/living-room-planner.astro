@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlannerLanding from '../components/PlannerLanding.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Living Room Planner – Arrange Sofas, TV and Tables Online';
+const description =
+  'Free living room planner. Draw your room to scale, arrange the sofa, coffee table and TV, check walking space and viewing distance, then download your layout.';
+
+const guide: GuideSection[] = [
+  GUIDE_SECTIONS.livingRoom!,
+  {
+    id: 'sofa-placement',
+    title: 'Where to put the sofa',
+    body: [
+      'The sofa is the anchor. Every other decision in a living room follows from where it goes, so place it first and be willing to try it in two or three positions before settling.',
+      'Against the longest wall is the default, but it is not always right. Floating a sofa with its back to a walkway can make a long room feel like two usable zones instead of one corridor.',
+    ],
+    points: [
+      'Leave 30 to 36 in for the main route past the sofa.',
+      'Leave 14 to 18 in between the sofa and the coffee table — close enough to reach a mug.',
+      'Do not block a radiator with the back of a sofa if you can avoid it.',
+      'In a long narrow room, two facing seats often beat one long sofa.',
+    ],
+  },
+  {
+    id: 'tv-distance',
+    title: 'How far should you sit from the TV?',
+    body: [
+      'A practical range is 1.5 to 2.5 times the screen diagonal. For a 55 in TV that is roughly 7 to 11 ft; for a 65 in TV, roughly 8 to 13 ft.',
+      'If your room forces you closer than that, the layout is telling you the TV is too big for the room — which is much cheaper to learn from a floor plan than from a delivery.',
+    ],
+    points: [
+      '43 in screen: about 5 ft 5 in to 9 ft',
+      '55 in screen: about 7 ft to 11 ft 6 in',
+      '65 in screen: about 8 ft to 13 ft 6 in',
+      '75 in screen: about 9 ft 6 in to 15 ft 6 in',
+    ],
+  },
+  {
+    id: 'rug-size',
+    title: 'Choosing a rug size',
+    body: [
+      'A rug that is too small is the most common living-room mistake, and it is obvious on a floor plan. The rug should tie the seating together, not sit like an island in the middle.',
+    ],
+    points: [
+      'At minimum, the front legs of every seat should sit on the rug.',
+      'For a 3-seater sofa, a 5 × 8 ft rug is usually the smallest that works; 8 × 10 ft is generous.',
+      'Leave 10 to 18 in of bare floor between the rug edge and the wall.',
+    ],
+  },
+  GUIDE_SECTIONS.measuring!,
+];
+
+const faq: FaqItem[] = [
+  {
+    question: 'How big should a living room be for a 3-seater sofa?',
+    answer:
+      'A 3-seater sofa is about 7 ft × 3 ft. It works comfortably in a room from about 11 ft wide, which leaves space for a walkway at one end and a side table at the other. Below that, a 2-seater or a corner arrangement usually plans better.',
+  },
+  {
+    question: 'How much space between the sofa and coffee table?',
+    answer:
+      'Between 14 and 18 in (35 to 45 cm). Closer than 14 in is awkward to get past; further than 18 in and you cannot reach the table from the sofa.',
+  },
+  {
+    question: 'Can I plan an L-shaped sofa?',
+    answer:
+      'Yes. The library includes an L-shaped sofa, and you can set its exact width and depth in the properties panel to match the one you are considering.',
+  },
+  {
+    question: 'How wide should a walkway be in a living room?',
+    answer:
+      'Aim for 30 to 36 in for the main route through the room, and at least 24 in for secondary paths between furniture. Turn on "Check walking space" to see where your layout falls short.',
+  },
+  {
+    question: 'Can I print or download the living room plan?',
+    answer:
+      'Yes. Download it as a PNG or SVG, or use Print Layout for a clean black-and-white plan with dimensions and a legend.',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/living-room-planner"
+  schema={[
+    appSchema('Living Room Planner', description, `${siteUrl}/living-room-planner`),
+    faqSchema(faq),
+  ]}
+>
+  <PlannerLanding
+    heading="Living room planner"
+    intro="Work out where the sofa goes before it arrives. Draw your living room to scale, arrange seating around the TV or the window, and check that people can still walk through."
+    template="living-room"
+    ctaLabel="Plan my living room"
+    checklist={[
+      'Measure wall to wall, and note any bay window or chimney breast.',
+      'Mark where the TV aerial point and power sockets are.',
+      'Write down the sofa dimensions you are considering, including the arms.',
+      'Check the doorway and stair turn the sofa has to come through.',
+    ]}
+    sizeTable={{
+      caption: 'Typical living room furniture sizes',
+      rows: [
+        { label: '2-seater sofa', imperial: '5 ft × 2 ft 10 in', metric: '152 × 86 cm' },
+        { label: '3-seater sofa', imperial: '7 ft × 3 ft', metric: '213 × 91 cm' },
+        { label: 'L-shaped sofa', imperial: '8 ft 4 in × 6 ft 4 in', metric: '254 × 193 cm' },
+        { label: 'Armchair', imperial: '2 ft 9 in × 2 ft 10 in', metric: '84 × 86 cm' },
+        { label: 'Coffee table', imperial: '4 ft × 2 ft', metric: '122 × 61 cm' },
+        { label: 'TV stand', imperial: '5 ft × 1 ft 6 in', metric: '152 × 46 cm' },
+        { label: 'Bookshelf', imperial: '3 ft × 1 ft', metric: '91 × 30 cm' },
+      ],
+    }}
+    guide={guide}
+    faq={faq}
+  />
+</BaseLayout>

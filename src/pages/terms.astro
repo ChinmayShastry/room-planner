@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Terms of Use – Room Planner';
+const description =
+  'Terms of use for Room Planner: the tool is for planning purposes, measurements depend on the dimensions you enter, and clearance suggestions are not professional building advice.';
+const updated = 'September 2026';
+---
+
+<BaseLayout title={title} description={description} canonical="/terms">
+  <section class="rp-container py-12">
+    <div class="rp-prose">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink">Terms of use</h1>
+      <p class="mt-2 text-sm text-ink-faint">Last updated: {updated}</p>
+
+      <h2>What Room Planner is for</h2>
+      <p>
+        Room Planner is a lightweight planning aid. It helps you sketch a rectangular room and try
+        furniture arrangements in two dimensions. It is not a CAD package, it does not produce
+        construction drawings, and it is not a substitute for professional measurement or design.
+      </p>
+
+      <h2>Measurements depend on you</h2>
+      <p>
+        Every dimension shown by Room Planner is derived from numbers you enter. The tool performs the
+        arithmetic faithfully, but it has no way to verify your measurements, and it does not know about
+        skirting boards, radiators, pipe boxing, bay windows, sloping ceilings, out-of-square walls or
+        anything else it was not told.
+      </p>
+      <p>
+        <strong>
+          Always re-measure and verify critical dimensions before buying furniture, ordering materials, or
+          making any building decision.
+        </strong>
+      </p>
+
+      <h2>Clearance and fit suggestions</h2>
+      <p>
+        The walking-space check, overlap warnings and the Will It Fit? calculator are general planning
+        guidelines based on common rules of thumb. They are informational only.
+      </p>
+      <ul>
+        <li>They are not an accessibility assessment.</li>
+        <li>They are not a fire-safety or means-of-escape assessment.</li>
+        <li>They are not a building-code or building-regulations assessment.</li>
+        <li>They do not account for the third dimension, so ceiling height and item height are on you.</li>
+      </ul>
+      <p>
+        Where legal requirements apply — accessibility standards, egress widths, or local building
+        regulations — consult the relevant code and a qualified professional.
+      </p>
+
+      <h2>Your layouts</h2>
+      <p>
+        Anything you create with Room Planner is yours. Layouts are stored in your own browser, so keeping
+        a backup is also yours to manage: use <strong>Export layout file</strong> if a plan matters to you.
+        Clearing site data, using private browsing, or switching device or browser will lose anything that
+        has not been exported.
+      </p>
+
+      <h2>Availability</h2>
+      <p>
+        The service is provided as-is and as-available, without warranties of any kind, express or implied,
+        including fitness for a particular purpose. Features may change or be removed. To the fullest
+        extent permitted by law, we are not liable for any loss arising from use of this tool — including
+        furniture that does not fit, materials ordered in the wrong quantity, or plans that cannot be
+        recovered.
+      </p>
+      <p>
+        Nothing in these terms limits any liability that cannot lawfully be limited, including liability
+        for death or personal injury caused by negligence, or for fraud.
+      </p>
+
+      <h2>Acceptable use</h2>
+      <p>
+        Please do not attempt to disrupt the service, or use it to distribute malicious files through the
+        import feature. Imported layout files are validated, but you should only import files you trust and
+        recognise.
+      </p>
+
+      <h2>Changes to these terms</h2>
+      <p>
+        These terms may be updated as the tool changes. The date at the top of this page shows when it was
+        last revised. Continuing to use Room Planner after a change means you accept the revised terms.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

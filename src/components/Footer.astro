@@ -1,0 +1,67 @@
+---
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Planners',
+    links: [
+      { href: '/room-planner', label: 'Room Planner' },
+      { href: '/bedroom-planner', label: 'Bedroom Planner' },
+      { href: '/small-bedroom-planner', label: 'Small Bedroom Planner' },
+      { href: '/living-room-planner', label: 'Living Room Planner' },
+      { href: '/home-office-planner', label: 'Home Office Planner' },
+    ],
+  },
+  {
+    title: 'Tools',
+    links: [
+      { href: '/furniture-layout-planner', label: 'Furniture Layout Planner' },
+      { href: '/room-layout-planner', label: 'Room Layout Planner' },
+      { href: '/furniture-fit-calculator', label: 'Will It Fit? Calculator' },
+      { href: '/room-size-calculator', label: 'Room Size Calculator' },
+    ],
+  },
+  {
+    title: 'About',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
+    ],
+  },
+];
+---
+
+<footer class="rp-no-print mt-auto border-t border-line bg-surface">
+  <div class="rp-container py-10">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="text-sm font-semibold text-ink">Room Planner</p>
+        <p class="mt-2 max-w-xs text-sm leading-relaxed text-ink-soft">
+          Plan your room before you move a thing. Free, no signup, and everything stays in your browser.
+        </p>
+      </div>
+      {
+        columns.map((column) => (
+          <nav aria-label={column.title}>
+            <p class="text-xs font-semibold uppercase tracking-wide text-ink-faint">{column.title}</p>
+            <ul class="mt-3 space-y-2">
+              {column.links.map((link) => (
+                <li>
+                  <a class="text-sm text-ink-soft transition-colors hover:text-accent-ink" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 flex flex-col gap-2 border-t border-line pt-6 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} Room Planner. Measurements depend on the dimensions you enter.</p>
+      <p>Clearance suggestions are planning guidelines, not building-code advice.</p>
+    </div>
+  </div>
+</footer>

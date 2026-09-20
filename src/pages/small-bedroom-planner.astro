@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlannerLanding from '../components/PlannerLanding.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Small Bedroom Planner – Make a Small Room Work';
+const description =
+  'Plan a small bedroom layout online for free. Fit a bed, wardrobe and desk into a 10 × 10 ft room, check walking space, and find the arrangement that actually works.';
+
+const guide: GuideSection[] = [
+  GUIDE_SECTIONS.smallBedroom!,
+  {
+    id: 'small-bedroom-sizes',
+    title: 'What actually fits in a small bedroom',
+    body: [
+      'In a room around 10 × 10 ft (3 × 3 m), the honest answer is: one bed, one wardrobe, and one more thing. Trying to fit a bed, wardrobe, desk and chest of drawers is where small-room layouts usually fall apart.',
+      'Putting the bed lengthways against a wall, rather than centred with walkways on both sides, typically frees about 2 ft of floor — enough for a desk that otherwise would not fit.',
+    ],
+    points: [
+      'A single bed against one wall leaves roughly 6 ft of clear width in a 10 ft room.',
+      'A double bed centred on a wall leaves about 2 ft 9 in each side in a 10 ft room.',
+      'A queen bed in a 10 × 10 ft room works with one walkway, not two.',
+      'Sliding wardrobe doors save the door-swing space entirely — often the deciding factor.',
+    ],
+  },
+  {
+    id: 'small-bedroom-tricks',
+    title: 'Layout tricks that buy you floor space',
+    body: [
+      'Small-room advice is often about how things look. These are the ones that change the floor plan itself.',
+    ],
+    points: [
+      'Corner the bed: two sides against walls instead of one.',
+      'Replace a bedside table with a floating shelf — it takes no floor at all.',
+      'Use a tall narrow wardrobe instead of a wide low one; the footprint is what matters.',
+      'A wall-mounted desk removes four legs and a chair-pull-out zone from the plan.',
+      'Under-bed storage replaces a chest of drawers without using any new floor.',
+    ],
+  },
+  GUIDE_SECTIONS.bedSpace!,
+  GUIDE_SECTIONS.measuring!,
+];
+
+const faq: FaqItem[] = [
+  {
+    question: 'Will a double bed fit in a 10 × 10 ft room?',
+    answer:
+      'Yes. A double bed is about 4 ft 6 in × 6 ft 3 in, which leaves roughly 2 ft 9 in on each side if it is centred, or about 5 ft 6 in of clear floor on one side if you push it against a wall. Both work; the second leaves room for a desk.',
+  },
+  {
+    question: 'Will a queen bed fit in a small bedroom?',
+    answer:
+      'A queen bed fits a 10 × 10 ft room, but you will realistically have one comfortable walkway rather than two. Plan it on the floor plan first — the difference between "fits" and "usable" is easy to see once it is drawn.',
+  },
+  {
+    question: 'Where should the wardrobe go in a small bedroom?',
+    answer:
+      'On a wall you can reach without walking past the bed, and where its doors have their own width of clear floor to swing into. If that is not possible, sliding doors remove the problem entirely.',
+  },
+  {
+    question: 'Can I fit a desk in a small bedroom?',
+    answer:
+      'Often yes, if the bed goes against a wall rather than being centred. A 4 × 2 ft desk needs about 3 ft of pull-out space for the chair. Try it in the planner before you buy.',
+  },
+  {
+    question: 'Is the planner free for small rooms?',
+    answer:
+      'The planner is free for any room size, with no signup. Your layout is saved in this browser automatically.',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/small-bedroom-planner"
+  schema={[
+    appSchema('Small Bedroom Planner', description, `${siteUrl}/small-bedroom-planner`),
+    faqSchema(faq),
+  ]}
+>
+  <PlannerLanding
+    heading="Small bedroom planner"
+    intro="Small rooms punish guesswork. Draw yours to scale, try the bed in each position, and see immediately which arrangement leaves room to walk, open the wardrobe, and still fit a desk."
+    template="small-bedroom"
+    ctaLabel="Plan my small bedroom"
+    checklist={[
+      'Measure the narrowest point of the room, not the widest.',
+      'Check whether the wardrobe doors swing or slide.',
+      'Note the radiator position — it usually rules out one wall.',
+      'Decide now whether you need two walkways or one.',
+    ]}
+    sizeTable={{
+      caption: 'What fits in a small bedroom',
+      rows: [
+        { label: 'Single bed', imperial: '3 ft × 6 ft 3 in', metric: '91 × 190 cm' },
+        { label: 'Small double bed', imperial: '4 ft × 6 ft 3 in', metric: '122 × 190 cm' },
+        { label: 'Double bed', imperial: '4 ft 6 in × 6 ft 3 in', metric: '137 × 190 cm' },
+        { label: 'Narrow wardrobe', imperial: '2 ft 6 in × 1 ft 10 in', metric: '76 × 56 cm' },
+        { label: 'Compact desk', imperial: '3 ft 4 in × 1 ft 8 in', metric: '102 × 51 cm' },
+        { label: 'Minimum walkway', imperial: '2 ft', metric: '60 cm' },
+      ],
+    }}
+    guide={guide}
+    faq={faq}
+  />
+</BaseLayout>

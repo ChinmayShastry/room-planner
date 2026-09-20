@@ -1,0 +1,339 @@
+---
+import { CATALOG, CATEGORIES } from '../../lib/planner/catalog';
+import { DOOR_PRESETS, WINDOW_PRESETS } from '../../lib/planner/state';
+import { TEMPLATES } from '../../lib/planner/templates';
+import { GRID_LABEL } from '../../lib/planner/snapping';
+import { UNIT_NAME } from '../../lib/planner/units';
+import { UNITS } from '../../lib/planner/types';
+import Icon from '../Icon.astro';
+
+const tabs = [
+  { id: 'furniture', label: 'Furniture', icon: 'sofa' as const },
+  { id: 'openings', label: 'Doors & Windows', icon: 'door' as const },
+  { id: 'room', label: 'Room', icon: 'sliders' as const },
+  { id: 'templates', label: 'Templates', icon: 'template' as const },
+  { id: 'layouts', label: 'Saved', icon: 'folder' as const },
+];
+
+const floorOptions = [
+  { value: 'light', label: 'Light' },
+  { value: 'warm', label: 'Warm' },
+  { value: 'gray', label: 'Gray' },
+];
+---
+
+<div class="planner-left" data-panel-group="left">
+  <!-- Desktop tab strip. On mobile the bottom bar plays this role. -->
+  <div
+    class="hidden shrink-0 gap-0.5 border-b border-line bg-surface px-1.5 py-1.5 lg:flex"
+    role="tablist"
+    aria-label="Planner tools"
+  >
+    {
+      tabs.map((tab) => (
+        <button
+          type="button"
+          class="rp-side-tab"
+          data-panel-tab={tab.id}
+          aria-pressed={tab.id === 'furniture' ? 'true' : 'false'}
+          title={tab.label}
+        >
+          <Icon name={tab.icon} size={16} />
+          <span class="rp-sr-only">{tab.label}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <!-- ------------------------------------------------------------ Furniture -->
+  <section
+    class="planner-panel"
+    data-panel="furniture"
+    data-panel-group="left"
+    data-open="true"
+    aria-label="Furniture library"
+  >
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Add furniture</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+
+    <div class="shrink-0 px-3 pb-2">
+      <label class="rp-sr-only" for="furniture-search">Search furniture</label>
+      <input
+        id="furniture-search"
+        type="search"
+        class="rp-input"
+        placeholder="Search beds, sofas, desks…"
+        data-rp="furniture-search"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="planner-panel-body">
+      {
+        CATEGORIES.map((category) => (
+          <div data-library-group={category.name} class="mb-4 last:mb-0">
+            <h3 class="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+              {category.name}
+            </h3>
+            <div class="grid grid-cols-2 gap-1.5">
+              {CATALOG.filter((item) => item.category === category.id).map((item) => (
+                <button
+                  type="button"
+                  class="rp-library-item"
+                  data-add="furniture"
+                  data-key={item.key}
+                  title={`Add ${item.name}`}
+                >
+                  <span
+                    class="h-3.5 w-3.5 shrink-0 rounded-[3px] border border-black/15"
+                    style={`background:${item.color}`}
+                    aria-hidden="true"
+                  />
+                  <span class="min-w-0 flex-1 truncate text-left">{item.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      <p class="px-1 py-4 text-sm text-ink-faint" data-rp="library-empty" hidden>
+        No furniture matches that search. Add anything and change its size in the panel on the right.
+      </p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------ Doors & windows -->
+  <section
+    class="planner-panel"
+    data-panel="openings"
+    data-panel-group="left"
+    data-open="false"
+    aria-label="Doors and windows"
+  >
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Doors &amp; windows</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+    <div class="planner-panel-body">
+      <h3 class="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Doors</h3>
+      <div class="mb-4 grid gap-1.5">
+        {
+          DOOR_PRESETS.map((preset) => (
+            <button type="button" class="rp-library-item" data-add="door" data-key={preset.type}>
+              <Icon name="door" size={16} />
+              <span class="min-w-0 flex-1 truncate text-left">{preset.name}</span>
+              <span class="shrink-0 text-xs text-ink-faint">{preset.width / 12} ft</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <h3 class="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Windows</h3>
+      <div class="grid gap-1.5">
+        {
+          WINDOW_PRESETS.map((preset) => (
+            <button type="button" class="rp-library-item" data-add="window" data-key={preset.type}>
+              <Icon name="window" size={16} />
+              <span class="min-w-0 flex-1 truncate text-left">{preset.name}</span>
+              <span class="shrink-0 text-xs text-ink-faint">{preset.width / 12} ft</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="mt-4 rounded-md bg-surface-sunk px-2.5 py-2 text-xs leading-relaxed text-ink-soft">
+        Drag a door or window along the walls to reposition it. It snaps to the nearest wall automatically.
+      </p>
+    </div>
+  </section>
+
+  <!-- ----------------------------------------------------------------- Room -->
+  <section class="planner-panel" data-panel="room" data-panel-group="left" data-open="false" aria-label="Room settings">
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Room</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+    <div class="planner-panel-body">
+      <div class="mb-3">
+        <label class="rp-field" for="room-name">Room name</label>
+        <input id="room-name" type="text" class="rp-input" data-room="name" maxlength="60" />
+      </div>
+
+      <div class="mb-3 grid grid-cols-2 gap-2">
+        <div>
+          <label class="rp-field" for="room-width">
+            Width (<span data-unit-label>ft</span>)
+          </label>
+          <input id="room-width" type="number" class="rp-input" data-room="width" min="1" step="0.25" inputmode="decimal" />
+        </div>
+        <div>
+          <label class="rp-field" for="room-length">
+            Length (<span data-unit-label>ft</span>)
+          </label>
+          <input id="room-length" type="number" class="rp-input" data-room="length" min="1" step="0.25" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="mb-3 grid grid-cols-2 gap-2">
+        <div>
+          <label class="rp-field" for="room-unit">Units</label>
+          <select id="room-unit" class="rp-select" data-room="unit">
+            {UNITS.map((unit) => <option value={unit}>{UNIT_NAME[unit]}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="rp-field" for="room-floor">Floor</label>
+          <select id="room-floor" class="rp-select" data-room="floor">
+            {floorOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4 grid grid-cols-3 gap-2 rounded-md bg-surface-sunk p-2.5">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">Area</p>
+          <p class="text-sm font-semibold text-ink" data-rp="stat-area">—</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">Perimeter</p>
+          <p class="text-sm font-semibold text-ink" data-rp="stat-perimeter">—</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">Items</p>
+          <p class="text-sm font-semibold text-ink" data-rp="stat-count">0</p>
+        </div>
+      </div>
+
+      <h3 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">View</h3>
+
+      <div class="mb-3">
+        <label class="rp-field" for="setting-grid">Grid</label>
+        <select id="setting-grid" class="rp-select" data-setting="grid">
+          {
+            (['off', 'fine', 'medium', 'large'] as const).map((size) => (
+              <option value={size}>{GRID_LABEL[size]}</option>
+            ))
+          }
+        </select>
+      </div>
+
+      <label class="rp-check">
+        <input type="checkbox" data-setting="snap" checked />
+        <span>Snap to grid and walls</span>
+      </label>
+      <label class="rp-check">
+        <input type="checkbox" data-setting="labels" checked />
+        <span>Show item labels</span>
+      </label>
+      <label class="rp-check">
+        <input type="checkbox" data-setting="dimensions" checked />
+        <span>Show measurements</span>
+      </label>
+      <label class="rp-check">
+        <input type="checkbox" data-setting="clearance" />
+        <span>Check walking space</span>
+      </label>
+
+      <div
+        class="mt-2 rounded-md border border-line bg-surface p-2.5"
+        data-rp="clearance-report"
+        aria-live="polite"
+        hidden
+      >
+      </div>
+
+      <hr class="my-4 border-line" />
+      <button type="button" class="rp-btn rp-btn-secondary w-full" data-action="new-room">
+        <Icon name="plus" size={16} />
+        Start a new room
+      </button>
+      <button type="button" class="rp-btn rp-btn-ghost mt-1.5 w-full" data-action="clear-room">
+        <Icon name="trash" size={16} />
+        Remove all furniture
+      </button>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ Templates -->
+  <section
+    class="planner-panel"
+    data-panel="templates"
+    data-panel-group="left"
+    data-open="false"
+    aria-label="Room templates"
+  >
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Templates</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+    <div class="planner-panel-body">
+      <p class="mb-2.5 text-xs leading-relaxed text-ink-soft">
+        A template replaces the current room. Everything stays editable afterwards.
+      </p>
+      <div class="grid gap-1.5">
+        {
+          TEMPLATES.map((template) => (
+            <button type="button" class="rp-template-card" data-template={template.id}>
+              <span class="text-sm font-medium text-ink">{template.name}</span>
+              <span class="mt-0.5 block text-xs leading-snug text-ink-faint">{template.description}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------- Saved layouts -->
+  <section
+    class="planner-panel"
+    data-panel="layouts"
+    data-panel-group="left"
+    data-open="false"
+    aria-label="Saved layouts"
+  >
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Saved layouts</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+    <div class="planner-panel-body">
+      <label class="rp-field" for="layout-name">Layout name</label>
+      <div class="mb-3 flex gap-1.5">
+        <input id="layout-name" type="text" class="rp-input" data-rp="layout-name" maxlength="60" />
+        <button type="button" class="rp-btn rp-btn-primary shrink-0" data-action="save">Save</button>
+      </div>
+
+      <div class="grid gap-1.5" data-rp="layout-list"></div>
+
+      <hr class="my-4 border-line" />
+
+      <h3 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Move between devices</h3>
+      <div class="grid gap-1.5">
+        <button type="button" class="rp-btn rp-btn-secondary w-full" data-action="export-json">
+          <Icon name="download" size={16} />
+          Export layout file
+        </button>
+        <button type="button" class="rp-btn rp-btn-secondary w-full" data-action="import">
+          <Icon name="upload" size={16} />
+          Import layout file
+        </button>
+      </div>
+      <input type="file" accept="application/json,.json" class="rp-sr-only" data-rp="import-file" />
+
+      <p class="mt-3 text-xs leading-relaxed text-ink-faint">
+        Layouts are saved only on this device and in this browser. Clearing site data removes them.
+      </p>
+    </div>
+  </section>
+</div>

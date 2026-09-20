@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const title = 'About Room Planner';
+const description =
+  'Room Planner is a free, browser-based 2D room and furniture layout tool. No account, no download, and your layouts stay on your own device.';
+---
+
+<BaseLayout title={title} description={description} canonical="/about">
+  <section class="rp-container py-12">
+    <div class="rp-prose">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink">About Room Planner</h1>
+
+      <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+        Room Planner exists to answer one question quickly: where should the furniture go?
+      </p>
+
+      <h2>Why it is deliberately simple</h2>
+      <p>
+        Most room-planning tools are either too basic to be useful or so complete that you have to learn
+        them first. Room Planner aims at the middle: draw a rectangular room, drop in furniture at real
+        sizes, and drag it around until the layout works. Most people get to a usable bedroom plan in under
+        a minute.
+      </p>
+      <p>
+        That means some things are intentionally left out. There are no 3D walkthroughs, no material
+        libraries, no lighting simulation, and no polygon wall editing. Those belong in a CAD package, and
+        if you need one, you should use one.
+      </p>
+
+      <h2>How it works</h2>
+      <p>
+        Everything runs in your browser. There is no server doing the drawing, no account to create, and
+        nothing to install. Your work is saved in your browser's own storage, which is why layouts stay on
+        the device you made them on — and why exporting a layout file is the way to move one elsewhere.
+      </p>
+
+      <h2>Accuracy</h2>
+      <p>
+        Room Planner is exactly as accurate as the numbers you give it. Internally everything is stored in
+        a single unit and converted only for display, so switching between feet and metres never drifts.
+        What it cannot do is check your tape measure — so measure twice, and verify anything critical
+        before you buy.
+      </p>
+
+      <h2>How it is funded</h2>
+      <p>
+        The planner is free. It is intended to be supported by advertising on the surrounding pages. Ads
+        will never be placed over the room canvas, next to the editing controls, or anywhere that would
+        interrupt planning a room.
+      </p>
+    </div>
+
+    <div class="mt-10 flex flex-wrap gap-2.5">
+      <a href="/room-planner" class="rp-btn rp-btn-primary rp-btn-lg">
+        Plan My Room
+        <Icon name="arrow-right" size={18} />
+      </a>
+      <a href="/privacy" class="rp-btn rp-btn-secondary rp-btn-lg">Read the privacy page</a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlannerLanding from '../components/PlannerLanding.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Bedroom Planner – Plan Your Bedroom Layout Online Free';
+const description =
+  'Free bedroom planner. Set your room size, place a bed, wardrobe and nightstands to scale, check the space around the bed, and download your bedroom layout.';
+
+const guide: GuideSection[] = [
+  {
+    id: 'plan-a-bedroom',
+    title: 'How to plan a bedroom layout',
+    body: [
+      'A bedroom layout is decided by three fixed things: where the door is, where the window is, and where the radiator or heating sits. Draw those first, then place the bed, then everything else.',
+      'The bed is almost always the first decision because it is the largest object and the hardest to fit. Once it is placed, the rest of the room either works or it does not, and you will know within a minute.',
+    ],
+    points: [
+      'Avoid putting the head of the bed directly in front of a door.',
+      'A bed under a window is fine and often the only option in a narrow room.',
+      'Keep the swing of the bedroom door and the wardrobe doors clear.',
+      'Put the wardrobe on the wall you can reach without walking around the bed.',
+    ],
+  },
+  GUIDE_SECTIONS.bedSpace!,
+  {
+    id: 'bedroom-mistakes',
+    title: 'Common bedroom planning mistakes',
+    body: [
+      'Most bedroom layouts fail for the same handful of reasons, and all of them are visible on a floor plan before anything gets delivered.',
+    ],
+    points: [
+      'Forgetting the wardrobe door swing, which needs its own width of floor in front of it.',
+      'Choosing a bed frame that is wider than the mattress — frames typically add 2 to 4 in per side.',
+      'Blocking a radiator with a bed or chest of drawers.',
+      'Leaving a walkway narrower than 24 in on the side you get out of bed.',
+      'Measuring the room but not the doorway the bed has to come through.',
+    ],
+  },
+  GUIDE_SECTIONS.measuring!,
+];
+
+const faq: FaqItem[] = [
+  {
+    question: 'What size bedroom do I need for a queen bed?',
+    answer:
+      'A queen bed is about 5 ft × 6 ft 8 in (152 × 203 cm). With a walkway on both sides and at the foot, a comfortable room is around 10 × 12 ft (3 × 3.7 m). It will physically fit in a 9 × 10 ft room, but with only one usable side.',
+  },
+  {
+    question: 'How much space do I need to walk around a bed?',
+    answer:
+      'About 24 in (60 cm) is enough to walk down the side of a bed, and 36 in (90 cm) is comfortable where two people pass or a wardrobe door opens. Room Planner can flag gaps narrower than this for you.',
+  },
+  {
+    question: 'Can I use my own bed and wardrobe dimensions?',
+    answer:
+      'Yes. Add any item from the library, then type its real width and depth into the panel on the right. You can rename it too, so it matches what is actually in your room.',
+  },
+  {
+    question: 'Should the bed go under the window?',
+    answer:
+      'It is perfectly normal, especially in narrow rooms where it is the only wall long enough. The trade-offs are draughts in older homes and losing that wall for curtains or a headboard. Plan it both ways and compare.',
+  },
+  {
+    question: 'Does the bedroom planner work on a phone?',
+    answer:
+      'Yes. The canvas fills the screen, furniture is touch-draggable, and you can type exact positions rather than dragging when you need precision.',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/bedroom-planner"
+  schema={[appSchema('Bedroom Planner', description, `${siteUrl}/bedroom-planner`), faqSchema(faq)]}
+>
+  <PlannerLanding
+    heading="Bedroom planner"
+    intro="Set your bedroom's real dimensions, place the bed, wardrobe and nightstands to scale, and see whether you can still walk around everything. Nothing to install and no account needed."
+    template="bedroom"
+    ctaLabel="Plan my bedroom"
+    checklist={[
+      'Measure the room wall to wall at floor level, not at the skirting board.',
+      'Note where the door, window and radiator are before you start.',
+      'Have your mattress size to hand — frames add 2 to 4 in per side.',
+      'Measure the doorway the bed has to come through.',
+    ]}
+    sizeTable={{
+      caption: 'Standard bed and bedroom furniture sizes',
+      rows: [
+        { label: 'Single bed', imperial: '3 ft × 6 ft 3 in', metric: '91 × 190 cm' },
+        { label: 'Double bed', imperial: '4 ft 6 in × 6 ft 3 in', metric: '137 × 190 cm' },
+        { label: 'Queen bed', imperial: '5 ft × 6 ft 8 in', metric: '152 × 203 cm' },
+        { label: 'King bed', imperial: '6 ft × 6 ft 8 in', metric: '183 × 203 cm' },
+        { label: 'Wardrobe', imperial: '6 ft × 2 ft', metric: '183 × 61 cm' },
+        { label: 'Nightstand', imperial: '1 ft 8 in × 1 ft 6 in', metric: '51 × 46 cm' },
+        { label: 'Chest of drawers', imperial: '5 ft × 1 ft 8 in', metric: '152 × 51 cm' },
+      ],
+    }}
+    guide={guide}
+    faq={faq}
+  />
+</BaseLayout>

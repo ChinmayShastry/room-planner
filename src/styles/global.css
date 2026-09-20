@@ -1,0 +1,649 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens — "warm modern utility".
+   A calm, low-chroma interface so the floor plan is the loudest thing on screen.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-canvas: #faf8f4;
+  --color-surface: #ffffff;
+  --color-surface-sunk: #f4f0e9;
+  --color-surface-raised: #fffdfa;
+
+  --color-ink: #2a2724;
+  --color-ink-soft: #6b635a;
+  --color-ink-faint: #736c64;
+
+  --color-line: #e6dfd4;
+  --color-line-strong: #d3cabc;
+  /* Borders that identify an interactive control need 3:1 (WCAG 1.4.11). */
+  --color-border-control: #8f887e;
+
+  --color-accent: #ad6425;
+  --color-accent-hover: #92531e;
+  --color-accent-soft: #f7ebdd;
+  --color-accent-ink: #834a16;
+
+  --color-ok: #5b7352;
+  --color-ok-soft: #eaf0e6;
+  --color-warn: #b14e2b;
+  --color-warn-soft: #fbeae3;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-card: 0 1px 2px rgb(42 39 36 / 0.05), 0 4px 12px rgb(42 39 36 / 0.05);
+  --shadow-pop: 0 8px 28px rgb(42 39 36 / 0.14);
+}
+
+/* ------------------------------------------------------------------ base */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* Inputs inherit the type scale so forms never look bolted on. */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* -------------------------------------------------------------- components */
+
+@layer components {
+  .rp-container {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .rp-container {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .rp-prose {
+    max-width: 68ch;
+  }
+
+  .rp-prose h2 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    font-weight: 650;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .rp-prose h3 {
+    font-size: 1.125rem;
+    font-weight: 650;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .rp-prose p,
+  .rp-prose ul,
+  .rp-prose ol {
+    color: var(--color-ink-soft);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .rp-prose ul,
+  .rp-prose ol {
+    padding-left: 1.25rem;
+  }
+
+  .rp-prose ul {
+    list-style: disc;
+  }
+
+  .rp-prose ol {
+    list-style: decimal;
+  }
+
+  .rp-prose li {
+    margin-bottom: 0.375rem;
+  }
+
+  .rp-prose a {
+    color: var(--color-accent-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .rp-prose strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
+  /* --- buttons --- */
+  .rp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 550;
+    line-height: 1.25rem;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .rp-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .rp-btn-primary {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  .rp-btn-primary:hover:not(:disabled) {
+    background-color: var(--color-accent-hover);
+  }
+
+  .rp-btn-secondary {
+    background-color: var(--color-surface);
+    border-color: var(--color-border-control);
+    color: var(--color-ink);
+  }
+
+  .rp-btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-surface-sunk);
+  }
+
+  .rp-btn-ghost {
+    background-color: transparent;
+    color: var(--color-ink-soft);
+  }
+
+  .rp-btn-ghost:hover:not(:disabled) {
+    background-color: var(--color-surface-sunk);
+    color: var(--color-ink);
+  }
+
+  .rp-btn-danger {
+    background-color: var(--color-warn-soft);
+    border-color: color-mix(in srgb, var(--color-warn) 30%, transparent);
+    color: var(--color-warn);
+  }
+
+  .rp-btn-danger:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--color-warn) 16%, #fff);
+  }
+
+  .rp-btn-lg {
+    padding: 0.75rem 1.375rem;
+    font-size: 1rem;
+  }
+
+  /* Square icon buttons in the toolbar. 40px keeps the touch target honest. */
+  .rp-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .rp-icon-btn:hover:not(:disabled) {
+    background-color: var(--color-surface-sunk);
+    color: var(--color-ink);
+  }
+
+  .rp-icon-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .rp-icon-btn[aria-pressed='true'] {
+    background-color: var(--color-accent-soft);
+    color: var(--color-accent-ink);
+  }
+
+  @media (max-width: 767px) {
+    .rp-icon-btn {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+  }
+
+  /* --- form controls --- */
+  .rp-field {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    margin-bottom: 0.3125rem;
+  }
+
+  .rp-input,
+  .rp-select {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-control);
+    background-color: var(--color-surface);
+    padding: 0.5rem 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+
+  .rp-input:focus,
+  .rp-select:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -1px;
+    border-color: var(--color-accent);
+  }
+
+  .rp-input[aria-invalid='true'] {
+    border-color: var(--color-warn);
+  }
+
+  .rp-select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-ink-faint) 50%),
+      linear-gradient(135deg, var(--color-ink-faint) 50%, transparent 50%);
+    background-position:
+      calc(100% - 15px) calc(50% + 2px),
+      calc(100% - 10px) calc(50% + 2px);
+    background-size:
+      5px 5px,
+      5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 1.75rem;
+  }
+
+  .rp-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+  }
+
+  .rp-error {
+    color: var(--color-warn);
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+  }
+
+  /* --- ad slots: reserved space, never over the canvas --- */
+  .rp-ad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-surface-sunk);
+    border: 1px dashed var(--color-line-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-ink-faint);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
+}
+
+/* ------------------------------------------------------------ the planner */
+
+.rp-canvas-wrap {
+  position: relative;
+  background-color: var(--color-surface-sunk);
+  background-image: radial-gradient(circle at 1px 1px, rgb(42 39 36 / 0.055) 1px, transparent 0);
+  background-size: 22px 22px;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+#room-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: default;
+}
+
+#room-canvas.is-panning {
+  cursor: grabbing;
+}
+
+#room-canvas.is-pan-ready {
+  cursor: grab;
+}
+
+#room-canvas.is-measuring {
+  cursor: crosshair;
+}
+
+.rp-item {
+  cursor: grab;
+}
+
+.rp-item:active {
+  cursor: grabbing;
+}
+
+.rp-item.is-dragging {
+  opacity: 0.92;
+}
+
+.rp-item:focus {
+  outline: none;
+}
+
+.rp-item:focus-visible > rect:first-of-type,
+.rp-item:focus-visible > path:first-of-type,
+.rp-item:focus-visible > ellipse:first-of-type,
+.rp-item:focus-visible > circle:first-of-type {
+  stroke: var(--color-accent);
+  stroke-width: 3;
+  stroke-dasharray: 5 3;
+}
+
+.rp-door,
+.rp-window {
+  cursor: pointer;
+}
+
+.rp-label {
+  font-family: var(--font-sans);
+  pointer-events: none;
+  user-select: none;
+}
+
+.rp-gap-label {
+  fill: var(--color-ink-faint);
+  paint-order: stroke;
+  stroke: rgb(255 255 255 / 0.85);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.rp-handle {
+  fill: #fff;
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.rp-handle:hover {
+  fill: var(--color-accent-soft);
+}
+
+.rp-handle-rotate {
+  cursor: grab;
+}
+
+.rp-selection-frame {
+  pointer-events: auto;
+}
+
+/* Shrink the fiddly bits out of existence on coarse pointers — the property
+   panel is the precise path on touch, and tiny handles just get in the way. */
+@media (pointer: coarse) {
+  .rp-handle {
+    stroke-width: 2;
+  }
+}
+
+/* ------------------------------------------------------ toasts and hints */
+
+.rp-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%) translateY(0.5rem);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  max-width: min(92vw, 30rem);
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-ink);
+  color: #fff;
+  font-size: 0.875rem;
+  box-shadow: var(--shadow-pop);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rp-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* Clear the planner's bottom tab bar on small screens. */
+@media (max-width: 1023px) {
+  .rp-toast {
+    bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+}
+
+.rp-toast[data-tone='warn'] {
+  background-color: var(--color-warn);
+}
+
+.rp-toast[data-tone='ok'] {
+  background-color: #4f6b46;
+}
+
+/* ------------------------------------------------------------ mobile sheet */
+
+.rp-sheet {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 45;
+  max-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-line);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  transform: translateY(101%);
+  transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.rp-sheet.is-open {
+  transform: translateY(0);
+}
+
+.rp-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background-color: rgb(42 39 36 / 0.32);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.rp-scrim.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------- scrollbars */
+
+.rp-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+.rp-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.rp-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 99px;
+  border: 3px solid var(--color-surface);
+}
+
+/* ------------------------------------------------------------------- print */
+
+.rp-print-host {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Hide the entire app chrome; only the print host survives. */
+  header,
+  footer,
+  nav,
+  aside,
+  .rp-ad,
+  .rp-toast,
+  .rp-sheet,
+  .rp-scrim,
+  .rp-no-print,
+  #planner-app {
+    display: none !important;
+  }
+
+  .rp-print-host {
+    display: block !important;
+    width: 100%;
+  }
+
+  .rp-print-host svg {
+    width: 100%;
+    height: auto;
+    max-height: 92vh;
+  }
+
+  .rp-print-only {
+    display: block !important;
+  }
+
+  a[href]::after {
+    content: '';
+  }
+}
+
+.rp-print-only {
+  display: none;
+}
+
+/* --------------------------------------------------------------- utilities */
+
+.rp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.rp-skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -3rem;
+  z-index: 100;
+  background: var(--color-ink);
+  color: #fff;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm);
+  transition: top 0.15s ease;
+}
+
+.rp-skip-link:focus {
+  top: 0.75rem;
+}

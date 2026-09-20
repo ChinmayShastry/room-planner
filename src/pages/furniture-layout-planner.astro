@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlannerLanding from '../components/PlannerLanding.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Furniture Layout Planner – Arrange Furniture Online Free';
+const description =
+  'Arrange furniture on a 2D floor plan for free. Drag, rotate and resize items to scale, spot overlaps and tight walkways, then save or download your furniture layout.';
+
+const guide: GuideSection[] = [
+  GUIDE_SECTIONS.howToPlace!,
+  {
+    id: 'clearance-numbers',
+    title: 'Clearance numbers worth remembering',
+    body: [
+      'Most furniture arguments come down to a handful of distances. These are planning guidelines rather than rules, but they are the ones that decide whether a room feels usable.',
+    ],
+    points: [
+      'Main walkway through a room: 30 to 36 in (75 to 90 cm).',
+      'Secondary path between two pieces: 24 in (60 cm).',
+      'Side of a bed you get out of: 24 in minimum, 36 in comfortable.',
+      'In front of a wardrobe or chest of drawers: the full door or drawer depth, plus 24 in to stand.',
+      'Between sofa and coffee table: 14 to 18 in (35 to 45 cm).',
+      'Behind a dining chair to walk past: 36 in (90 cm) from the table edge.',
+    ],
+  },
+  {
+    id: 'layout-workflow',
+    title: 'A workflow that gets you to a good layout fast',
+    body: [
+      'Rearranging on screen is cheap, so the fastest route to a good layout is to try several bad ones quickly rather than carefully optimising the first one.',
+    ],
+    points: [
+      'Draw the room and add the doors and windows first.',
+      'Place the single largest item and try it on every wall it fits against.',
+      'Add the second-largest item and see which of those positions survive.',
+      'Turn on "Check walking space" to find the pinch points.',
+      'Only then add small items, lamps and plants.',
+      'Save the two best versions and compare them side by side.',
+    ],
+  },
+  GUIDE_SECTIONS.willItFit!,
+  GUIDE_SECTIONS.measuring!,
+];
+
+const faq: FaqItem[] = [
+  {
+    question: 'Can I arrange furniture from any room type?',
+    answer:
+      'Yes. The library covers bedroom, living room, dining, office, kitchen, bathroom and storage furniture, plus rugs, plants and lamps. Anything can go in any room.',
+  },
+  {
+    question: 'How do I rotate furniture?',
+    answer:
+      'Select an item and use the rotate buttons, the 0/90/180/270 presets, the rotation handle above the item, or press R. You can also type any angle you like.',
+  },
+  {
+    question: 'What happens if two items overlap?',
+    answer:
+      'The overlapping items are outlined and a note appears above the plan. Nothing is moved or blocked — overlapping is sometimes deliberate, like a chair tucked under a desk or a rug beneath a table.',
+  },
+  {
+    question: 'Can I change an item to my furniture’s real size?',
+    answer:
+      'Yes. Select the item and type its real width and depth, or drag the handles on its corners. You can rename it as well.',
+  },
+  {
+    question: 'Is there an undo?',
+    answer:
+      'Yes — Ctrl+Z (Cmd+Z on a Mac), or the undo button in the toolbar. Redo is Ctrl+Shift+Z. The planner keeps a long history, so you can experiment freely.',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/furniture-layout-planner"
+  schema={[
+    appSchema('Furniture Layout Planner', description, `${siteUrl}/furniture-layout-planner`),
+    faqSchema(faq),
+  ]}
+>
+  <PlannerLanding
+    heading="Furniture layout planner"
+    intro="Drag furniture around a scaled floor plan until the room works. Everything is drawn at real size, overlaps are flagged, and you can check walking space in one click."
+    template="studio-apartment"
+    ctaLabel="Arrange my furniture"
+    checklist={[
+      'Start with the room dimensions and the door position.',
+      'Place the largest item first — everything else follows from it.',
+      'Use real sizes for the furniture you already own.',
+      'Turn on "Check walking space" once the big pieces are placed.',
+    ]}
+    sizeTable={{
+      caption: 'Clearance guidelines at a glance',
+      rows: [
+        { label: 'Main walkway', imperial: '30 – 36 in', metric: '75 – 90 cm' },
+        { label: 'Secondary path', imperial: '24 in', metric: '60 cm' },
+        { label: 'Beside a bed', imperial: '24 – 36 in', metric: '60 – 90 cm' },
+        { label: 'Sofa to coffee table', imperial: '14 – 18 in', metric: '35 – 45 cm' },
+        { label: 'Behind a dining chair', imperial: '36 in', metric: '90 cm' },
+        { label: 'In front of a wardrobe', imperial: 'door depth + 24 in', metric: 'door depth + 60 cm' },
+      ],
+    }}
+    guide={guide}
+    faq={faq}
+  />
+</BaseLayout>

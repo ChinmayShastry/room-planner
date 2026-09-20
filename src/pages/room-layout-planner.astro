@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlannerLanding from '../components/PlannerLanding.astro';
+import { appSchema, faqSchema, GUIDE_SECTIONS } from '../lib/content';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const title = 'Room Layout Planner – Draw a Floor Plan and Test Layouts';
+const description =
+  'Draw a room layout online free. Set dimensions in feet or metres, add doors and windows, position furniture to scale, and compare layouts before you move anything.';
+
+const guide: GuideSection[] = [
+  GUIDE_SECTIONS.whatIs!,
+  {
+    id: 'doors-and-windows',
+    title: 'Why doors and windows come first',
+    body: [
+      'A room layout is mostly decided by its openings. A door consumes roughly its own width of floor in front of it, and a window decides where a desk, a bed or a sofa can sensibly go.',
+      'Adding them before any furniture means you never have to redo a layout that looked fine until you remembered the door opens inwards.',
+    ],
+    points: [
+      'Place the door on the correct wall and set its swing direction.',
+      'A 36 in door needs about 36 in of clear floor to open fully.',
+      'Mark windows so you can see which walls are actually available.',
+      'Sliding doors and open doorways need no swing space, which can rescue a tight room.',
+    ],
+  },
+  {
+    id: 'compare-layouts',
+    title: 'Comparing two layouts properly',
+    body: [
+      'The useful comparison is not which plan looks tidier, but which one you can move around in. Two layouts that both "fit" can be very different to live in.',
+    ],
+    points: [
+      'Save each version as a named layout so you can switch between them.',
+      'Check the narrowest walkway in each — that number tells you more than the floor area.',
+      'Walk the route from the door to the window in your head, on each plan.',
+      'Export both as images and look at them side by side.',
+    ],
+  },
+  GUIDE_SECTIONS.howToPlace!,
+  GUIDE_SECTIONS.measuring!,
+];
+
+const faq: FaqItem[] = [
+  {
+    question: 'Can I draw an L-shaped or irregular room?',
+    answer:
+      'Not yet. The planner handles rectangular rooms, which covers the large majority of bedrooms, offices and living rooms. For an L-shaped space, a practical workaround is to plan the main rectangle and place the furniture that belongs in the alcove at its edge.',
+  },
+  {
+    question: 'Can I switch between feet and metres?',
+    answer:
+      'Yes, at any time. Change the unit in the Room panel and every measurement on screen updates. The underlying dimensions never change, so switching back and forth does not introduce rounding errors.',
+  },
+  {
+    question: 'How do I add a door or window?',
+    answer:
+      'Open the Doors & Windows panel and pick a type. Then drag it along the walls — it snaps to whichever wall is nearest — or set the wall and position numerically in the properties panel.',
+  },
+  {
+    question: 'Can I change the room size after adding furniture?',
+    answer:
+      'Yes. Edit the width or length in the Room panel. Your furniture stays exactly where you put it, and anything now outside the room is flagged so you can move it back in. Nothing is ever deleted for you.',
+  },
+  {
+    question: 'Where are my layouts stored?',
+    answer:
+      'In this browser on this device, using local storage. There is no account and nothing is uploaded. Use Export layout file to move a plan to another device.',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/room-layout-planner"
+  schema={[
+    appSchema('Room Layout Planner', description, `${siteUrl}/room-layout-planner`),
+    faqSchema(faq),
+  ]}
+>
+  <PlannerLanding
+    heading="Room layout planner"
+    intro="Draw any rectangular room to scale, add the doors and windows, then test layouts until one works. Switch between feet, metres, inches and centimetres whenever you like."
+    template="dining-room"
+    ctaLabel="Draw my room"
+    checklist={[
+      'Measure the room wall to wall at floor level.',
+      'Note which wall the door is on and which way it opens.',
+      'Mark the windows — they decide which walls are usable.',
+      'Pick your unit once and stick to it while measuring.',
+    ]}
+    sizeTable={{
+      caption: 'Common room sizes',
+      rows: [
+        { label: 'Small bedroom', imperial: '10 × 10 ft', metric: '3.0 × 3.0 m' },
+        { label: 'Bedroom', imperial: '12 × 14 ft', metric: '3.7 × 4.3 m' },
+        { label: 'Master bedroom', imperial: '14 × 16 ft', metric: '4.3 × 4.9 m' },
+        { label: 'Living room', imperial: '16 × 20 ft', metric: '4.9 × 6.1 m' },
+        { label: 'Home office', imperial: '10 × 12 ft', metric: '3.0 × 3.7 m' },
+        { label: 'Studio', imperial: '20 × 20 ft', metric: '6.1 × 6.1 m' },
+      ],
+    }}
+    guide={guide}
+    faq={faq}
+  />
+</BaseLayout>

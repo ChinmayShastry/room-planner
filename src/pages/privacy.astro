@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Privacy – Room Planner';
+const description =
+  'How Room Planner handles your data: room calculations run locally, layouts are stored in your own browser, no account is required, and imported files never leave your device.';
+const updated = 'September 2026';
+---
+
+<BaseLayout title={title} description={description} canonical="/privacy">
+  <section class="rp-container py-12">
+    <div class="rp-prose">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink">Privacy</h1>
+      <p class="mt-2 text-sm text-ink-faint">Last updated: {updated}</p>
+
+      <h2>The short version</h2>
+      <p>
+        Room Planner is a tool that runs in your browser. Creating a room, arranging furniture and
+        calculating areas all happen on your own device. There is no account, and you do not need to give
+        us any personal information to use the planner.
+      </p>
+
+      <h2>What is stored, and where</h2>
+      <p>
+        When you use the planner, your current layout is saved automatically in your browser's local
+        storage so that you can close the tab and come back to it. If you use <strong>Save</strong>, named
+        layouts are stored in the same place.
+      </p>
+      <ul>
+        <li>Saved layouts live on the device and in the browser you created them in.</li>
+        <li>They are not uploaded, and we cannot see them.</li>
+        <li>Clearing your browser's site data deletes them permanently.</li>
+        <li>You can delete any saved layout yourself from the Saved layouts panel.</li>
+      </ul>
+      <p>
+        A layout contains only what you put in it: room dimensions, item names and positions, colours, and
+        your view settings.
+      </p>
+
+      <h2>Files you import and export</h2>
+      <p>
+        Exporting a layout creates a file on your device. Importing one reads a file you select and
+        processes it in the browser. Imported files are validated before use and are never sent anywhere.
+      </p>
+
+      <h2>Images, printing and sharing</h2>
+      <p>
+        PNG and SVG exports are generated in your browser. If you use <strong>Share</strong>, your device's
+        own sharing feature takes over, and where the image goes next is decided by you and the app you
+        share it with.
+      </p>
+
+      <h2>Analytics and advertising</h2>
+      <p>
+        This site includes a small, non-identifying event abstraction so that usage can be measured if an
+        analytics provider is added in future. Today, no analytics provider is connected and no analytics
+        requests are sent. If one is added, this page will be updated to name it and describe what it
+        collects before it goes live.
+      </p>
+      <p>
+        We intend to fund Room Planner with advertising. Advertising slots are reserved in the layout but
+        no ad network is loaded at present. If Google AdSense or another network is enabled later, this
+        page will be updated to say so, and third-party advertising cookies and their purposes will be
+        disclosed here along with the relevant opt-out information. Advertising will never be placed over
+        the room canvas or next to the editing controls.
+      </p>
+
+      <h2>Hosting</h2>
+      <p>
+        Like any website, requests for the pages, styles and scripts reach the server or content delivery
+        network that hosts this site, which may keep standard technical logs such as IP address, browser
+        user agent and the page requested. That is a property of how the web works rather than something
+        this application does with your layouts.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        Room Planner is a general-purpose tool and is not directed at children. It does not ask for or
+        knowingly collect personal information from anyone.
+      </p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Delete individual layouts from the Saved layouts panel.</li>
+        <li>Clear site data in your browser to remove everything Room Planner has stored.</li>
+        <li>Use private browsing if you would rather nothing persists at all.</li>
+        <li>Export a layout file if you want a copy you control outside the browser.</li>
+      </ul>
+
+      <h2>Contact</h2>
+      <p>
+        If something on this page is unclear, or you think Room Planner is behaving differently from what
+        is described here, please get in touch through the contact route listed on the site you obtained
+        this application from.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

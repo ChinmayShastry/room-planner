@@ -1,0 +1,61 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'site' | 'app';
+}
+const { variant = 'site' } = Astro.props;
+
+const links = [
+  { href: '/room-planner', label: 'Room Planner' },
+  { href: '/bedroom-planner', label: 'Bedroom' },
+  { href: '/living-room-planner', label: 'Living Room' },
+  { href: '/home-office-planner', label: 'Home Office' },
+  { href: '/furniture-fit-calculator', label: 'Will It Fit?' },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, '');
+---
+
+{
+  variant === 'site' && (
+    <header class="rp-no-print sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-sm">
+      <div class="rp-container flex h-14 items-center gap-4">
+        <a
+          href="/"
+          class="flex shrink-0 items-center gap-2 text-[15px] font-semibold tracking-tight text-ink"
+        >
+          <span
+            class="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white"
+            aria-hidden="true"
+          >
+            <Icon name="home" size={16} />
+          </span>
+          Room Planner
+        </a>
+
+        <nav aria-label="Planner tools" class="ml-auto hidden items-center gap-1 md:flex">
+          {links.map((link) => (
+            <a
+              href={link.href}
+              aria-current={current === link.href ? 'page' : undefined}
+              class:list={[
+                'rounded-md px-2.5 py-1.5 text-sm transition-colors',
+                current === link.href
+                  ? 'bg-accent-soft font-medium text-accent-ink'
+                  : 'text-ink-soft hover:bg-surface-sunk hover:text-ink',
+              ]}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <a href="/room-planner" class="rp-btn rp-btn-primary ml-auto md:ml-2">
+          <Icon name="plus" size={16} />
+          Plan My Room
+        </a>
+      </div>
+    </header>
+  )
+}

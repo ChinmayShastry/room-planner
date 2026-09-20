@@ -1,0 +1,203 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdSlot from '../components/AdSlot.astro';
+import Faq from '../components/Faq.astro';
+import GuideSections from '../components/GuideSections.astro';
+import Icon from '../components/Icon.astro';
+import DemoPlanner from '../components/planner/DemoPlanner.astro';
+import { ALL_GUIDE_SECTIONS, appSchema, faqSchema, GENERAL_FAQ } from '../lib/content';
+import { TEMPLATES } from '../lib/planner/templates';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+
+const title = 'Free Room Planner – Design Your Room Layout Online';
+const description =
+  'Plan your room layout online for free. Add furniture, doors and windows, arrange everything on a 2D floor plan, check dimensions and download your room plan.';
+
+const steps = [
+  { title: 'Enter your room size', body: 'Type the width and length, or pick a common room size.' },
+  { title: 'Add your furniture', body: 'Choose from beds, sofas, desks and more — all at realistic sizes.' },
+  { title: 'Move things around', body: 'Drag, rotate and resize until the layout actually works.' },
+  { title: 'Save or download', body: 'Keep it in your browser, print it, or download it as an image.' },
+];
+
+const features = [
+  { icon: 'ruler' as const, title: 'Real measurements', body: 'Everything is drawn to scale in feet, meters, inches or centimeters.' },
+  { icon: 'alert' as const, title: 'Fit warnings', body: 'See instantly when items overlap or spill outside the room.' },
+  { icon: 'door' as const, title: 'Doors and windows', body: 'Place openings on any wall, with the door swing drawn in.' },
+  { icon: 'grid' as const, title: 'Snap to grid', body: 'Objects line up neatly, or turn snapping off for precise control.' },
+  { icon: 'download' as const, title: 'Export and print', body: 'Download a PNG or SVG, or print a clean floor plan.' },
+  { icon: 'save' as const, title: 'Works offline-first', body: 'No account. Your layouts stay in your browser.' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical="/"
+  schema={[
+    appSchema('Room Planner', description, `${siteUrl}/`),
+    faqSchema(GENERAL_FAQ),
+  ]}
+>
+  <!-- ------------------------------------------------------------------ hero -->
+  <section class="rp-container pt-10 pb-6 sm:pt-16">
+    <div class="max-w-3xl">
+      <p class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent-ink">
+        <Icon name="check" size={14} />
+        Free · No signup · Works in your browser
+      </p>
+      <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+        Plan your room before you move a thing.
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">
+        Create a simple floor plan, arrange your furniture, and find a layout that works — right in your
+        browser.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-2.5">
+        <a href="/room-planner" class="rp-btn rp-btn-primary rp-btn-lg">
+          Plan My Room
+          <Icon name="arrow-right" size={18} />
+        </a>
+        <a href="#templates" class="rp-btn rp-btn-secondary rp-btn-lg">
+          <Icon name="template" size={18} />
+          Start With a Template
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------- interactive preview -->
+  <section class="rp-container pb-10">
+    <DemoPlanner template="bedroom" />
+  </section>
+
+  <div class="rp-container">
+    <AdSlot slot="home-below-hero" format="leaderboard" class="mb-12" />
+  </div>
+
+  <!-- ------------------------------------------------------------- templates -->
+  <section id="templates" class="rp-container scroll-mt-20 py-4">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">Start with a template</h2>
+    <p class="mt-1.5 max-w-2xl text-ink-soft">
+      Each one opens a furnished room at a realistic size. Change anything you like.
+    </p>
+    <div class="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        TEMPLATES.map((template) => (
+          <a
+            href={`/room-planner?template=${template.id}`}
+            class="group rounded-lg border border-line bg-surface p-4 transition-colors hover:border-accent hover:bg-accent-soft"
+          >
+            <p class="font-medium text-ink">{template.name}</p>
+            <p class="mt-1 text-sm leading-snug text-ink-soft">{template.description}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent-ink">
+              Open
+              <Icon name="arrow-right" size={14} />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- how it works -->
+  <section class="rp-container py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">How it works</h2>
+    <ol class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step, index) => (
+          <li>
+            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
+              {index + 1}
+            </span>
+            <p class="mt-3 font-medium text-ink">{step.title}</p>
+            <p class="mt-1 text-sm leading-relaxed text-ink-soft">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ---------------------------------------------------------------- features -->
+  <section class="border-y border-line bg-surface py-12">
+    <div class="rp-container">
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">What you can do</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          features.map((feature) => (
+            <div class="flex gap-3">
+              <span
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent-ink"
+                aria-hidden="true"
+              >
+                <Icon name={feature.icon} size={18} />
+              </span>
+              <div>
+                <p class="font-medium text-ink">{feature.title}</p>
+                <p class="mt-0.5 text-sm leading-relaxed text-ink-soft">{feature.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ other tools -->
+  <section class="rp-container py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">Quick tools</h2>
+    <div class="mt-5 grid gap-2.5 sm:grid-cols-2">
+      <a
+        href="/furniture-fit-calculator"
+        class="flex items-start gap-3 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-accent"
+      >
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent-ink" aria-hidden="true">
+          <Icon name="calculator" size={18} />
+        </span>
+        <span>
+          <span class="block font-medium text-ink">Will it fit?</span>
+          <span class="mt-0.5 block text-sm leading-relaxed text-ink-soft">
+            Check a piece of furniture against your room and your doorway, including at an angle.
+          </span>
+        </span>
+      </a>
+      <a
+        href="/room-size-calculator"
+        class="flex items-start gap-3 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-accent"
+      >
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent-ink" aria-hidden="true">
+          <Icon name="ruler" size={18} />
+        </span>
+        <span>
+          <span class="block font-medium text-ink">Room size calculator</span>
+          <span class="mt-0.5 block text-sm leading-relaxed text-ink-soft">
+            Work out area and perimeter in any unit, for flooring, paint or rugs.
+          </span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <GuideSections sections={ALL_GUIDE_SECTIONS} heading="Room planning guides" />
+
+  <Faq items={GENERAL_FAQ} />
+
+  <div class="rp-container">
+    <AdSlot slot="home-below-content" format="leaderboard" class="mb-4" />
+  </div>
+
+  <!-- ------------------------------------------------------------------- cta -->
+  <section class="rp-container py-12">
+    <div class="rounded-xl border border-line bg-surface px-6 py-10 text-center">
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Ready to try it?</h2>
+      <p class="mx-auto mt-2 max-w-xl text-ink-soft">
+        Most people have a working bedroom layout inside a minute. No account, no download.
+      </p>
+      <a href="/room-planner" class="rp-btn rp-btn-primary rp-btn-lg mt-6">
+        Plan My Room
+        <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </section>
+</BaseLayout>

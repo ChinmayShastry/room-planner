@@ -1,0 +1,42 @@
+---
+import AdSlot from './AdSlot.astro';
+import type { GuideSection } from '../lib/content';
+
+interface Props {
+  sections: GuideSection[];
+  heading?: string;
+  /** Insert one ad slot after this many sections. 0 disables it. */
+  adAfter?: number;
+}
+
+const { sections, heading, adAfter = 3 } = Astro.props;
+---
+
+<section class="rp-container py-12">
+  {heading && <h2 class="mb-6 text-2xl font-semibold tracking-tight text-ink">{heading}</h2>}
+
+  <div class="rp-prose">
+    {
+      sections.map((section, index) => (
+        <>
+          <article id={section.id} class="scroll-mt-20">
+            <h2>{section.title}</h2>
+            {section.body.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+            {section.points && (
+              <ul>
+                {section.points.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+            )}
+          </article>
+          {adAfter > 0 && index === adAfter - 1 && index < sections.length - 1 && (
+            <AdSlot slot={`guide-inline-${index}`} format="inline" class="my-8" />
+          )}
+        </>
+      ))
+    }
+  </div>
+</section>

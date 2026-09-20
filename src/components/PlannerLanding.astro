@@ -1,0 +1,132 @@
+---
+import AdSlot from './AdSlot.astro';
+import Faq from './Faq.astro';
+import GuideSections from './GuideSections.astro';
+import Icon from './Icon.astro';
+import DemoPlanner from './planner/DemoPlanner.astro';
+import type { FaqItem, GuideSection } from '../lib/content';
+
+interface SizeRow {
+  label: string;
+  imperial: string;
+  metric: string;
+}
+
+interface Props {
+  heading: string;
+  intro: string;
+  /** Template id used by both the preview and the "open planner" link. */
+  template: string;
+  /** Short checklist rendered beside the preview. */
+  checklist: string[];
+  /** Optional reference table of typical sizes. */
+  sizeTable?: { caption: string; rows: SizeRow[] };
+  guide: GuideSection[];
+  faq: FaqItem[];
+  ctaLabel?: string;
+}
+
+const {
+  heading,
+  intro,
+  template,
+  checklist,
+  sizeTable,
+  guide,
+  faq,
+  ctaLabel = 'Open the planner',
+} = Astro.props;
+---
+
+<section class="rp-container pt-10 pb-6 sm:pt-14">
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{heading}</h1>
+    <p class="mt-4 text-lg leading-relaxed text-ink-soft">{intro}</p>
+    <p class="mt-3 text-sm font-medium text-ink-faint">Free · No signup · Works in your browser</p>
+    <div class="mt-6 flex flex-wrap gap-2.5">
+      <a href={`/room-planner?template=${template}`} class="rp-btn rp-btn-primary rp-btn-lg">
+        {ctaLabel}
+        <Icon name="arrow-right" size={18} />
+      </a>
+      <a href="/room-planner" class="rp-btn rp-btn-secondary rp-btn-lg">Start from a blank room</a>
+    </div>
+  </div>
+</section>
+
+<section class="rp-container pb-10">
+  <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
+    <DemoPlanner template={template} />
+    <aside class="rp-card p-5">
+      <h2 class="text-base font-semibold text-ink">Before you start</h2>
+      <ul class="mt-3 space-y-2.5">
+        {
+          checklist.map((item) => (
+            <li class="flex gap-2 text-sm leading-relaxed text-ink-soft">
+              <span class="mt-0.5 shrink-0 text-ok" aria-hidden="true">
+                <Icon name="check" size={16} />
+              </span>
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={`/room-planner?template=${template}`} class="rp-btn rp-btn-primary mt-5 w-full">
+        {ctaLabel}
+      </a>
+    </aside>
+  </div>
+</section>
+
+<div class="rp-container">
+  <AdSlot slot="landing-below-tool" format="leaderboard" class="mb-10" />
+</div>
+
+{
+  sizeTable && (
+    <section class="rp-container pb-10">
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">{sizeTable.caption}</h2>
+      <div class="mt-4 overflow-x-auto rounded-lg border border-line bg-surface">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-line bg-surface-sunk text-left">
+              <th scope="col" class="px-4 py-2.5 font-semibold text-ink">Item</th>
+              <th scope="col" class="px-4 py-2.5 font-semibold text-ink">Typical size (ft/in)</th>
+              <th scope="col" class="px-4 py-2.5 font-semibold text-ink">Typical size (cm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sizeTable.rows.map((row) => (
+              <tr class="border-b border-line last:border-0">
+                <th scope="row" class="px-4 py-2.5 text-left font-medium text-ink">
+                  {row.label}
+                </th>
+                <td class="px-4 py-2.5 text-ink-soft">{row.imperial}</td>
+                <td class="px-4 py-2.5 text-ink-soft">{row.metric}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-ink-faint">
+        Sizes vary by manufacturer. Always measure the piece you actually plan to buy.
+      </p>
+    </section>
+  )
+}
+
+<GuideSections sections={guide} adAfter={2} />
+
+<Faq items={faq} />
+
+<section class="rp-container pb-14">
+  <div class="rounded-xl border border-line bg-surface px-6 py-10 text-center">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">Try it with your own measurements</h2>
+    <p class="mx-auto mt-2 max-w-xl text-ink-soft">
+      Enter your room size, drop in your furniture, and see whether the layout you have in mind actually works.
+    </p>
+    <a href={`/room-planner?template=${template}`} class="rp-btn rp-btn-primary rp-btn-lg mt-6">
+      {ctaLabel}
+      <Icon name="arrow-right" size={18} />
+    </a>
+  </div>
+</section>

@@ -1,0 +1,269 @@
+---
+import { COLOR_PALETTE } from '../../lib/planner/catalog';
+import { WALLS } from '../../lib/planner/types';
+import Icon from '../Icon.astro';
+
+const rotations = [0, 90, 180, 270];
+
+const swings = [
+  { value: 'in-right', label: 'Opens in, right hinge' },
+  { value: 'in-left', label: 'Opens in, left hinge' },
+  { value: 'out-right', label: 'Opens out, right hinge' },
+  { value: 'out-left', label: 'Opens out, left hinge' },
+];
+
+const wallLabels: Record<string, string> = {
+  top: 'Top wall',
+  right: 'Right wall',
+  bottom: 'Bottom wall',
+  left: 'Left wall',
+};
+---
+
+<div class="planner-right" data-panel-group="right">
+  <section
+    class="planner-panel"
+    data-panel="properties"
+    data-panel-group="right"
+    data-open="true"
+    aria-label="Selected object"
+  >
+    <div class="planner-panel-head">
+      <h2 class="planner-panel-title">Selected</h2>
+      <button type="button" class="rp-icon-btn lg:hidden" data-action="close-panel" aria-label="Close panel">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+
+    <div class="planner-panel-body">
+      <!-- ------------------------------------------------------ empty state -->
+      <div data-rp="properties-empty">
+        <p class="text-sm leading-relaxed text-ink-soft">
+          Nothing selected. Click an item on the plan — or pick one from the list below — to change its size,
+          position and colour.
+        </p>
+      </div>
+
+      <!-- ------------------------------------------------- furniture properties -->
+      <div data-rp="properties" hidden>
+        <p class="truncate text-base font-semibold text-ink" data-rp="prop-title">Item</p>
+        <p class="mb-3 text-xs text-ink-faint" data-rp="prop-subtitle"></p>
+
+        <div class="mb-3">
+          <label class="rp-field" for="prop-name">Name</label>
+          <input id="prop-name" type="text" class="rp-input" data-prop="name" maxlength="60" />
+        </div>
+
+        <div class="mb-3 grid grid-cols-2 gap-2">
+          <div>
+            <label class="rp-field" for="prop-width">Width (<span data-unit-label>ft</span>)</label>
+            <input
+              id="prop-width"
+              type="number"
+              class="rp-input"
+              data-prop="width"
+              min="0.1"
+              step="0.25"
+              inputmode="decimal"
+            />
+          </div>
+          <div>
+            <label class="rp-field" for="prop-height">Depth (<span data-unit-label>ft</span>)</label>
+            <input
+              id="prop-height"
+              type="number"
+              class="rp-input"
+              data-prop="height"
+              min="0.1"
+              step="0.25"
+              inputmode="decimal"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3 grid grid-cols-2 gap-2">
+          <div>
+            <label class="rp-field" for="prop-x">X (<span data-unit-label>ft</span>)</label>
+            <input id="prop-x" type="number" class="rp-input" data-prop="x" step="0.25" inputmode="decimal" />
+          </div>
+          <div>
+            <label class="rp-field" for="prop-y">Y (<span data-unit-label>ft</span>)</label>
+            <input id="prop-y" type="number" class="rp-input" data-prop="y" step="0.25" inputmode="decimal" />
+          </div>
+        </div>
+        <p class="-mt-2 mb-3 text-[11px] leading-snug text-ink-faint">
+          X and Y are the centre of the item, measured from the top-left corner of the room.
+        </p>
+
+        <div class="mb-3">
+          <label class="rp-field" for="prop-rotation">Rotation</label>
+          <div class="flex gap-1.5">
+            <button
+              type="button"
+              class="rp-icon-btn shrink-0 border border-line"
+              data-action="rotate-left"
+              aria-label="Rotate left 90 degrees"
+              title="Rotate left"
+            >
+              <Icon name="rotate-ccw" size={16} />
+            </button>
+            <input
+              id="prop-rotation"
+              type="number"
+              class="rp-input"
+              data-prop="rotation"
+              min="0"
+              max="359"
+              step="1"
+              inputmode="numeric"
+            />
+            <button
+              type="button"
+              class="rp-icon-btn shrink-0 border border-line"
+              data-action="rotate-right"
+              aria-label="Rotate right 90 degrees"
+              title="Rotate right (R)"
+            >
+              <Icon name="rotate-cw" size={16} />
+            </button>
+          </div>
+          <div class="mt-1.5 flex gap-1">
+            {
+              rotations.map((deg) => (
+                <button type="button" class="rp-seg" data-rotate-to={deg} aria-pressed="false">
+                  {deg}°
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="rp-field">Colour</span>
+          <div class="grid grid-cols-7 gap-1.5">
+            {
+              COLOR_PALETTE.map((swatch) => (
+                <button
+                  type="button"
+                  class="rp-swatch"
+                  data-color={swatch.value}
+                  style={`background:${swatch.value}`}
+                  aria-pressed="false"
+                  aria-label={swatch.name}
+                  title={swatch.name}
+                />
+              ))
+            }
+          </div>
+        </div>
+
+        <label class="rp-check mb-2">
+          <input type="checkbox" data-prop="labelVisible" checked />
+          <span>Show this item's label</span>
+        </label>
+
+        <div class="mb-3 grid grid-cols-2 gap-1.5">
+          <button type="button" class="rp-btn rp-btn-secondary" data-action="bring-forward">
+            <Icon name="bring-forward" size={16} />
+            Forward
+          </button>
+          <button type="button" class="rp-btn rp-btn-secondary" data-action="send-backward">
+            <Icon name="send-backward" size={16} />
+            Back
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-1.5">
+          <button type="button" class="rp-btn rp-btn-secondary" data-action="duplicate" data-requires-item>
+            <Icon name="copy" size={16} />
+            Duplicate
+          </button>
+          <button type="button" class="rp-btn rp-btn-danger" data-action="delete" data-requires-selection>
+            <Icon name="trash" size={16} />
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- ------------------------------------------------- opening properties -->
+      <div data-rp="opening-props" hidden>
+        <p class="mb-3 text-base font-semibold text-ink" data-rp="opening-title">Door</p>
+
+        <div class="mb-3">
+          <label class="rp-field" for="opening-wall">Wall</label>
+          <select id="opening-wall" class="rp-select" data-opening="wall">
+            {WALLS.map((wall) => <option value={wall}>{wallLabels[wall]}</option>)}
+          </select>
+        </div>
+
+        <div class="mb-3 grid grid-cols-2 gap-2">
+          <div>
+            <label class="rp-field" for="opening-width">Width (<span data-unit-label>ft</span>)</label>
+            <input
+              id="opening-width"
+              type="number"
+              class="rp-input"
+              data-opening="width"
+              min="1"
+              step="0.25"
+              inputmode="decimal"
+            />
+          </div>
+          <div>
+            <label class="rp-field" for="opening-offset">
+              Along wall (<span data-unit-label>ft</span>)
+            </label>
+            <input
+              id="opening-offset"
+              type="number"
+              class="rp-input"
+              data-opening="offset"
+              min="0"
+              step="0.25"
+              inputmode="decimal"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3" data-rp="swing-row">
+          <label class="rp-field" for="opening-swing">Swing</label>
+          <select id="opening-swing" class="rp-select" data-opening="swing">
+            {swings.map((swing) => <option value={swing.value}>{swing.label}</option>)}
+          </select>
+        </div>
+
+        <button type="button" class="rp-btn rp-btn-danger w-full" data-action="delete" data-requires-selection>
+          <Icon name="trash" size={16} />
+          Delete
+        </button>
+      </div>
+
+      <!-- ------------------------------------------------------- object list -->
+      <hr class="my-4 border-line" />
+      <h3 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+        Objects in this room
+      </h3>
+      <div class="grid gap-0.5" role="listbox" aria-label="Objects in this room" data-rp="object-list"></div>
+
+      <div class="mt-4 rounded-md bg-surface-sunk px-2.5 py-2 text-[11px] leading-relaxed text-ink-soft">
+        <p class="mb-1 font-semibold text-ink">Keyboard</p>
+        <p>Arrow keys move · <kbd>Shift</kbd>+arrows nudge by 1 in · <kbd>R</kbd> rotates</p>
+        <p><kbd>Ctrl</kbd>+<kbd>D</kbd> duplicates · <kbd>Delete</kbd> removes · <kbd>Esc</kbd> deselects</p>
+        <p><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> redo</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  kbd {
+    display: inline-block;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 3px;
+    background: var(--color-surface);
+    padding: 0 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 15px;
+  }
+</style>

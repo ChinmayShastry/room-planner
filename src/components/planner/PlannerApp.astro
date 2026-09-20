@@ -1,0 +1,90 @@
+---
+import '../../styles/planner.css';
+import Icon from '../Icon.astro';
+import PropertiesPanel from './PropertiesPanel.astro';
+import RoomCanvas from './RoomCanvas.astro';
+import SetupDialog from './SetupDialog.astro';
+import Toolbar from './Toolbar.astro';
+import ToolsPanel from './ToolsPanel.astro';
+import type { Unit } from '../../lib/planner/types';
+
+interface Props {
+  /** Template id loaded when there is no autosaved layout. */
+  template?: string;
+  /** Room applied when there is neither an autosave nor a template. */
+  room?: { name: string; width: number; length: number; unit: Unit };
+  /** Open the room setup dialog on first paint. */
+  openSetup?: boolean;
+}
+
+const { template, room, openSetup = false } = Astro.props;
+
+const config = {
+  template,
+  room,
+  autosave: true,
+  demo: false,
+};
+
+const mobileTabs = [
+  { id: 'furniture', label: 'Add', icon: 'plus' as const },
+  { id: 'openings', label: 'Openings', icon: 'door' as const },
+  { id: 'properties', label: 'Selected', icon: 'sliders' as const },
+  { id: 'room', label: 'Room', icon: 'grid' as const },
+  { id: 'templates', label: 'Templates', icon: 'template' as const },
+  { id: 'layouts', label: 'Saved', icon: 'folder' as const },
+];
+---
+
+<div
+  id="planner-app"
+  class="planner-shell"
+  data-planner-config={JSON.stringify(config)}
+  data-open-setup={openSetup ? 'true' : 'false'}
+>
+  <!--
+    The editor is a tool, not an article, so its heading is for assistive tech
+    and search engines rather than the screen. Without it the page would have
+    no h1 at all.
+  -->
+  <h1 class="rp-sr-only">Room Planner — draw your room and arrange furniture to scale</h1>
+
+  <Toolbar />
+
+  <div class="planner-body">
+    <ToolsPanel />
+    <RoomCanvas />
+    <PropertiesPanel />
+  </div>
+
+  <nav class="planner-tabbar rp-no-print" aria-label="Planner panels">
+    {
+      mobileTabs.map((tab) => (
+        <button type="button" data-panel-tab={tab.id} aria-pressed="false">
+          <Icon name={tab.icon} size={18} />
+          <span class="truncate">{tab.label}</span>
+        </button>
+      ))
+    }
+  </nav>
+
+  <div class="rp-scrim rp-no-print lg:hidden" data-rp="scrim"></div>
+
+  <SetupDialog />
+</div>
+
+<script>
+  import { initPlanner } from '../../scripts/planner-ui';
+
+  const root = document.getElementById('planner-app');
+  if (root) {
+    const engine = initPlanner(root);
+    // Open the setup dialog only when the page asked for it AND nothing was
+    // restored, so a returning visitor is never interrupted — including one
+    // whose saved room is still empty.
+    if (engine && root.dataset.openSetup === 'true' && root.dataset.plannerRestored !== 'true') {
+      const dialog = root.querySelector<HTMLDialogElement>('[data-rp="setup"]');
+      dialog?.showModal();
+    }
+  }
+</script>

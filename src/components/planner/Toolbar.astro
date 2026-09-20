@@ -1,0 +1,124 @@
+---
+import Icon from '../Icon.astro';
+---
+
+<header
+  class="rp-no-print flex h-14 shrink-0 items-center gap-1 border-b border-line bg-surface px-2 sm:px-3"
+>
+  <a
+    href="/"
+    class="flex shrink-0 items-center gap-2 pr-1 text-sm font-semibold tracking-tight text-ink sm:pr-3"
+    aria-label="Room Planner home"
+  >
+    <span class="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white" aria-hidden="true">
+      <Icon name="home" size={16} />
+    </span>
+    <span class="hidden sm:inline">Room Planner</span>
+  </a>
+
+  <div class="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden="true"></div>
+
+  <button type="button" class="rp-icon-btn" data-action="undo" title="Undo (Ctrl+Z)" aria-label="Undo">
+    <Icon name="undo" />
+  </button>
+  <button type="button" class="rp-icon-btn" data-action="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
+    <Icon name="redo" />
+  </button>
+
+  <div class="mx-1 hidden h-6 w-px bg-line md:block" aria-hidden="true"></div>
+
+  <button
+    type="button"
+    class="rp-icon-btn hidden md:inline-flex"
+    data-action="measure"
+    aria-pressed="false"
+    title="Measure between two points"
+    aria-label="Measure tool"
+  >
+    <Icon name="ruler" />
+  </button>
+  <button
+    type="button"
+    class="rp-icon-btn hidden md:inline-flex"
+    data-action="clear-measure"
+    title="Clear measurement"
+    aria-label="Clear measurement"
+    hidden
+  >
+    <Icon name="close" />
+  </button>
+
+  <div class="min-w-0 flex-1 px-2 text-center">
+    <p class="truncate text-sm font-medium text-ink" data-rp="room-title">My Room</p>
+    <p class="truncate text-xs text-ink-faint">
+      <span data-rp="stat-size">—</span>
+      <span aria-hidden="true"> · </span>
+      <span data-rp="save-status" class="text-ink-faint">Saved on this device</span>
+    </p>
+  </div>
+
+  <button type="button" class="rp-btn rp-btn-secondary hidden sm:inline-flex" data-action="save">
+    <Icon name="save" size={16} />
+    Save
+  </button>
+
+  <details class="relative">
+    <summary
+      class="rp-btn rp-btn-primary list-none [&::-webkit-details-marker]:hidden"
+      aria-haspopup="menu"
+    >
+      <Icon name="download" size={16} />
+      <span class="hidden sm:inline">Export</span>
+      <Icon name="chevron-down" size={14} />
+    </summary>
+    <div
+      class="absolute right-0 top-[calc(100%+6px)] z-40 w-60 rounded-lg border border-line bg-surface p-1.5 shadow-[var(--shadow-pop)]"
+      role="menu"
+    >
+      <button type="button" class="rp-menu-item" data-action="export-png" role="menuitem">
+        <Icon name="download" size={16} />
+        <span>Download PNG image</span>
+      </button>
+      <button type="button" class="rp-menu-item" data-action="export-svg" role="menuitem">
+        <Icon name="download" size={16} />
+        <span>Download SVG</span>
+      </button>
+      <button type="button" class="rp-menu-item" data-action="print" role="menuitem">
+        <Icon name="print" size={16} />
+        <span>Print layout</span>
+      </button>
+      <button type="button" class="rp-menu-item" data-action="share" role="menuitem">
+        <Icon name="share" size={16} />
+        <span>Share plan</span>
+      </button>
+      <hr class="my-1.5 border-line" />
+      <button type="button" class="rp-menu-item" data-action="export-json" role="menuitem">
+        <Icon name="save" size={16} />
+        <span>Export layout file (JSON)</span>
+      </button>
+      <button type="button" class="rp-menu-item" data-action="import" role="menuitem">
+        <Icon name="upload" size={16} />
+        <span>Import layout file</span>
+      </button>
+      <hr class="my-1.5 border-line" />
+      <button type="button" class="rp-menu-item sm:hidden" data-action="save" role="menuitem">
+        <Icon name="folder" size={16} />
+        <span>Save to this device</span>
+      </button>
+      <button type="button" class="rp-menu-item" data-action="new-room" role="menuitem">
+        <Icon name="plus" size={16} />
+        <span>Start a new room</span>
+      </button>
+    </div>
+  </details>
+</header>
+
+<style>
+  /* Scoped so the menu styling cannot leak into the marketing pages. */
+  details[open] > summary::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+  }
+</style>

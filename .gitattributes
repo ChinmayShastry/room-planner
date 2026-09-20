@@ -1,0 +1,10 @@
+# Normalise line endings: LF in the repository, native in the working copy.
+# Keeps Windows checkouts and the Linux build machine byte-identical.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

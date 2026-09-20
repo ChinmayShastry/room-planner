@@ -1,0 +1,36 @@
+---
+/**
+ * Reserved advertising space.
+ *
+ * Nothing is loaded today — this renders an empty, correctly sized container so
+ * that switching AdSense on later causes zero cumulative layout shift.
+ *
+ * Placement rules enforced by usage, not by this component:
+ *   - never over or beside the room canvas
+ *   - never adjacent to editor controls, where a mis-tap would cost a click
+ *   - never between a control and the thing it controls
+ */
+interface Props {
+  /** Where this slot sits, for future per-slot ad unit ids. */
+  slot: string;
+  format?: 'leaderboard' | 'rectangle' | 'inline';
+  class?: string;
+}
+
+const { slot, format = 'leaderboard', class: className = '' } = Astro.props;
+
+const HEIGHTS: Record<NonNullable<Props['format']>, string> = {
+  // Reserved heights match standard AdSense responsive units.
+  leaderboard: 'min-h-[90px] sm:min-h-[90px]',
+  rectangle: 'min-h-[250px]',
+  inline: 'min-h-[120px]',
+};
+---
+
+<aside
+  class:list={['rp-ad rp-no-print w-full', HEIGHTS[format], className]}
+  data-ad-slot={slot}
+  aria-label="Advertisement"
+>
+  <span class="select-none">Ad space</span>
+</aside>
