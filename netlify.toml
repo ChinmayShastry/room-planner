@@ -1,0 +1,44 @@
+# Netlify build configuration.
+#
+# Kept in the repository rather than only in the dashboard so the build is
+# reproducible and reviewable, and so connecting the repo for continuous
+# deployment later needs no extra setup.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 5 needs Node 18.17+, 20.3+ or 22+. Pinning avoids a surprise when
+  # Netlify moves its default.
+  NODE_VERSION = "22"
+
+# Astro fingerprints everything it emits into /_astro, so those files can be
+# cached forever. Any change produces a new filename.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# HTML is revalidated on every request so a redeploy is picked up immediately.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    # The planner is entirely client-side and talks to nothing, so it can be
+    # locked down hard. 'unsafe-inline' is required for Astro's inlined styles
+    # and the small inline bootstrap scripts.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"

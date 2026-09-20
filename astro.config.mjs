@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // Update this to the production domain before deploying.
 // It powers canonical URLs, Open Graph tags and the generated sitemap.
-export const SITE_URL = 'https://roomplanner.example.com';
+export const SITE_URL = 'https://plan-my-room.netlify.app';
 
 export default defineConfig({
   site: SITE_URL,

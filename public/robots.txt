@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://roomplanner.example.com/sitemap.xml
+Sitemap: https://plan-my-room.netlify.app/sitemap.xml

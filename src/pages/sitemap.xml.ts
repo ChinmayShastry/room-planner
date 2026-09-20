@@ -29,7 +29,13 @@ const PAGES: Entry[] = [
 ];
 
 export const GET: APIRoute = ({ site }) => {
-  const base = (site?.toString() ?? 'https://roomplanner.example.com/').replace(/\/$/, '');
+  // No fallback domain on purpose: a second hardcoded URL here would silently
+  // go stale the moment the real one changes. `site` comes from astro.config.mjs
+  // and is the single source of truth, so a missing one is a build error.
+  if (!site) {
+    throw new Error('`site` must be set in astro.config.mjs so the sitemap can emit absolute URLs.');
+  }
+  const base = site.toString().replace(/\/$/, '');
   const lastmod = new Date().toISOString().slice(0, 10);
 
   const urls = PAGES.map(

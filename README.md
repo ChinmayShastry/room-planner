@@ -29,16 +29,29 @@ Then open http://localhost:4321.
 | `npm test` | Run the unit tests once |
 | `npm run test:watch` | Tests in watch mode |
 
-## Before you deploy
+## Deployment
 
-Set your real domain in [`astro.config.mjs`](astro.config.mjs):
+Live at **https://plan-my-room.netlify.app**, hosted on Netlify from this repository.
+
+### Moving to a custom domain
+
+Two files carry the domain. Change both, then redeploy:
 
 ```js
+// astro.config.mjs
 export const SITE_URL = 'https://your-domain.example';
 ```
 
-It drives canonical URLs, Open Graph tags and `/sitemap.xml`. Then update the `Sitemap:` line in
-[`public/robots.txt`](public/robots.txt) to match.
+```
+# public/robots.txt
+Sitemap: https://your-domain.example/sitemap.xml
+```
+
+`SITE_URL` drives canonical URLs, Open Graph tags and `/sitemap.xml`. The sitemap endpoint reads it
+from `Astro.site` and throws at build time if it is missing, so there is no second copy to go stale.
+
+After switching, add the new domain in Netlify, re-verify the property in Google Search Console and
+resubmit the sitemap.
 
 ---
 
