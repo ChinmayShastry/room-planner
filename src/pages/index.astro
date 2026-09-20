@@ -12,7 +12,7 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
 
 const title = 'Free Room Planner – Design Your Room Layout Online';
 const description =
-  'Plan your room layout online for free. Add furniture, doors and windows, arrange everything on a 2D floor plan, check dimensions and download your room plan.';
+  'Free online room planner. Draw your room to scale, add furniture, doors and windows, check what actually fits, then download or print your room plan. No signup.';
 
 const steps = [
   { title: 'Enter your room size', body: 'Type the width and length, or pick a common room size.' },
@@ -47,12 +47,19 @@ const features = [
         <Icon name="check" size={14} />
         Free · No signup · Works in your browser
       </p>
+      <!--
+        The heading carries the primary term as well as the promise. It used to
+        be the tagline alone, which read well but told Google nothing about what
+        the page is — the whole head cluster ("room planner", "room plan",
+        "room planning") lives on this one page, so the h1 has to say so.
+      -->
       <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-        Plan your room before you move a thing.
+        <span class="block text-2xl font-semibold text-accent-ink sm:text-3xl">Free room planner</span>
+        <span class="mt-1 block">Plan your room before you move a thing.</span>
       </h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">
-        Create a simple floor plan, arrange your furniture, and find a layout that works — right in your
-        browser.
+        Draw your room to scale, arrange the furniture, and see the layout before you move anything —
+        right in your browser. No signup, no download.
       </p>
       <div class="mt-6 flex flex-wrap gap-2.5">
         <a href="/room-planner" class="rp-btn rp-btn-primary rp-btn-lg">
@@ -70,6 +77,17 @@ const features = [
   <!-- --------------------------------------------------- interactive preview -->
   <section class="rp-container pb-10">
     <DemoPlanner template="bedroom" />
+  </section>
+
+  <section class="rp-container pb-10">
+    <div class="rp-prose">
+      <p>
+        Room Planner is a free 2D room planning tool for real rooms and real furniture. Enter your
+        dimensions, drop in a bed, sofa or desk at its true size, and drag things around until the room
+        plan works. Unlike a 3D room designer or a full home planner, there is nothing to learn and
+        nothing to install — most people have a usable layout in about a minute.
+      </p>
+    </div>
   </section>
 
   <div class="rp-container">

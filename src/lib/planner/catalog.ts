@@ -159,11 +159,85 @@ export function catalogByCategory(category: CategoryId): CatalogItem[] {
   return CATALOG.filter((item) => item.category === category);
 }
 
-/** Case-insensitive name/category search for the library's filter box. */
+/**
+ * Everyday words people actually type that do not appear in any catalog name.
+ * Searching "couch" used to return nothing at all, which reads as a missing
+ * feature rather than a vocabulary gap. Keys are what someone types; values are
+ * the catalog keys they should find.
+ */
+const SYNONYMS: Record<string, string[]> = {
+  couch: ['sofa', 'sofa-2', 'sofa-3', 'sofa-l'],
+  settee: ['sofa', 'sofa-2', 'sofa-3'],
+  loveseat: ['sofa-2'],
+  sectional: ['sofa-l'],
+  recliner: ['armchair'],
+  closet: ['wardrobe'],
+  almirah: ['wardrobe'],
+  'chest of drawers': ['dresser'],
+  bureau: ['dresser'],
+  'bedside table': ['nightstand'],
+  'side table': ['nightstand'],
+  'end table': ['nightstand'],
+  nightstand: ['nightstand'],
+  cot: ['single-bed'],
+  crib: ['single-bed'],
+  twin: ['single-bed'],
+  full: ['double-bed'],
+  fridge: ['refrigerator'],
+  freezer: ['refrigerator'],
+  stove: ['oven'],
+  cooker: ['oven'],
+  range: ['oven'],
+  hob: ['oven'],
+  television: ['tv', 'tv-stand'],
+  telly: ['tv'],
+  monitor: ['tv'],
+  worktop: ['kitchen-counter'],
+  countertop: ['kitchen-counter'],
+  basin: ['bathroom-sink', 'kitchen-sink'],
+  washbasin: ['bathroom-sink'],
+  lavatory: ['toilet'],
+  loo: ['toilet'],
+  wc: ['toilet'],
+  bath: ['bathtub'],
+  tub: ['bathtub'],
+  carpet: ['rug'],
+  mat: ['rug'],
+  bookcase: ['bookshelf', 'office-bookshelf'],
+  shelving: ['shelf', 'bookshelf'],
+  cabinet: ['cabinet', 'bathroom-cabinet', 'filing-cabinet'],
+  cupboard: ['cabinet', 'wardrobe'],
+  table: ['dining-table', 'coffee-table', 'table-4', 'table-6'],
+  seat: ['chair', 'dining-chair', 'armchair'],
+  stool: ['bedroom-chair', 'dining-chair'],
+  workstation: ['office-desk'],
+  plant: ['plant'],
+  pot: ['plant'],
+};
+
+/**
+ * Case-insensitive search across names, categories, shapes and the synonym map.
+ * Order is preserved from CATALOG so results stay grouped sensibly.
+ */
 export function searchCatalog(query: string): CatalogItem[] {
   const q = query.trim().toLowerCase();
   if (!q) return CATALOG;
+
+  const viaSynonym = new Set<string>();
+  for (const [word, keys] of Object.entries(SYNONYMS)) {
+    if (word.includes(q) || q.includes(word)) keys.forEach((key) => viaSynonym.add(key));
+  }
+
   return CATALOG.filter(
-    (item) => item.name.toLowerCase().includes(q) || item.category.includes(q) || item.shape.includes(q),
+    (item) =>
+      item.name.toLowerCase().includes(q) ||
+      item.category.includes(q) ||
+      item.shape.includes(q) ||
+      viaSynonym.has(item.key),
   );
+}
+
+/** The catalog keys a query matches, for the library's DOM-level filter. */
+export function searchCatalogKeys(query: string): Set<string> {
+  return new Set(searchCatalog(query).map((item) => item.key));
 }

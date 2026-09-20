@@ -27,6 +27,7 @@ import { buildTemplateState, TEMPLATES } from '@lib/planner/templates';
 import { parseLayoutFile, toLayoutFile } from '@lib/planner/storage';
 import { itemBounds } from '@lib/planner/geometry';
 import { findOverlaps } from '@lib/planner/collision';
+import { CATALOG, searchCatalog, searchCatalogKeys } from '@lib/planner/catalog';
 import { buildStandaloneSvg } from '@lib/planner/render';
 import { LIMITS } from '@lib/planner/types';
 import type { PlannerState } from '@lib/planner/types';
@@ -585,5 +586,52 @@ describe('swapping the whole document', () => {
     for (let i = 0; i < 4; i += 1) history.undo();
     expect(history.current.room.name).toBe('Bedroom');
     expect(history.canUndo).toBe(false);
+  });
+});
+
+// -------------------------------------------------- furniture search
+
+describe('furniture search', () => {
+  it('finds items by their catalog name', () => {
+    expect(searchCatalog('bed').map((i) => i.key)).toContain('queen-bed');
+    expect(searchCatalog('desk').map((i) => i.key)).toContain('office-desk');
+  });
+
+  /**
+   * "couch" appears nowhere in the catalog, so the old name-only match returned
+   * an empty list — which reads as a broken feature rather than a vocabulary
+   * gap. These are the words people actually type.
+   */
+  it('resolves everyday synonyms that appear in no catalog name', () => {
+    const cases: Array<[string, string]> = [
+      ['couch', 'sofa-3'],
+      ['closet', 'wardrobe'],
+      ['fridge', 'refrigerator'],
+      ['bedside table', 'nightstand'],
+      ['tub', 'bathtub'],
+      ['carpet', 'rug'],
+      ['bookcase', 'bookshelf'],
+      ['stove', 'oven'],
+      ['loveseat', 'sofa-2'],
+      ['sectional', 'sofa-l'],
+    ];
+    for (const [query, expectedKey] of cases) {
+      const keys = searchCatalog(query).map((i) => i.key);
+      expect(keys, `"${query}" should find ${expectedKey}`).toContain(expectedKey);
+    }
+  });
+
+  it('returns the whole catalog for an empty query', () => {
+    expect(searchCatalog('').length).toBe(CATALOG.length);
+    expect(searchCatalog('   ').length).toBe(CATALOG.length);
+  });
+
+  it('returns nothing for a genuine miss rather than everything', () => {
+    expect(searchCatalog('helicopter')).toHaveLength(0);
+  });
+
+  it('exposes matching keys for the DOM filter', () => {
+    expect(searchCatalogKeys('couch').has('sofa-3')).toBe(true);
+    expect(searchCatalogKeys('couch').has('queen-bed')).toBe(false);
   });
 });

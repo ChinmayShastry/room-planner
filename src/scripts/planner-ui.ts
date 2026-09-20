@@ -7,7 +7,7 @@
  */
 
 import { trackEvent } from '@lib/planner/analytics';
-import { CATALOG, COLOR_PALETTE, getCatalogItem } from '@lib/planner/catalog';
+import { CATALOG, COLOR_PALETTE, getCatalogItem, searchCatalogKeys } from '@lib/planner/catalog';
 import { RECOMMENDED_CLEARANCE } from '@lib/planner/collision';
 import { exportJson, exportPng, exportSvg, printPlan, renderPrintHost, sharePlan } from '@lib/planner/export';
 import { roomArea, roomPerimeter } from '@lib/planner/geometry';
@@ -306,14 +306,15 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
 
   function filterLibrary(query: string): void {
     const q = query.trim().toLowerCase();
+    const matches = q === '' ? new Set<string>() : searchCatalogKeys(q);
     let visibleTotal = 0;
     for (const group of $$(root, '[data-library-group]')) {
       let visible = 0;
       for (const button of $$(group, '[data-add="furniture"]')) {
-        const haystack = `${button.dataset.key ?? ''} ${button.textContent ?? ''} ${
-          group.dataset.libraryGroup ?? ''
-        }`.toLowerCase();
-        const match = q === '' || haystack.includes(q);
+        // Match through the catalog rather than the rendered text, so everyday
+        // words with no on-screen equivalent still find something: "couch"
+        // returns the sofas, "closet" returns the wardrobe.
+        const match = q === '' || matches.has(button.dataset.key ?? '');
         button.hidden = !match;
         if (match) visible += 1;
       }
@@ -849,6 +850,27 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
   window.addEventListener('resize', debounce(applyLayoutMode, 150));
   applyLayoutMode();
 
+  // A tap that lands on an object should show that object's properties. Gated
+  // on a movement threshold so dragging furniture or panning the canvas — both
+  // of which also end in a pointerup — never throws the sheet over the plan.
+  {
+    let pressedAt: { x: number; y: number } | null = null;
+    const TAP_SLOP = 6;
+
+    svg.addEventListener('pointerdown', (event) => {
+      pressedAt = { x: event.clientX, y: event.clientY };
+    });
+
+    svg.addEventListener('pointerup', (event) => {
+      const start = pressedAt;
+      pressedAt = null;
+      if (!start) return;
+      if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > TAP_SLOP) return;
+      // Let the engine settle its own selection on this same pointerup first.
+      window.setTimeout(() => revealPropertiesOnMobile(engine.selection), 0);
+    });
+  }
+
   // ----------------------------------------------------------- onboarding
   const hints = $(root, '[data-rp="hints"]');
   if (hints) {
@@ -1013,6 +1035,24 @@ export function initPlanner(root: HTMLElement): PlannerEngine | null {
     const id = (event.target as HTMLElement).closest<HTMLElement>('[data-select-item]')?.dataset.selectItem;
     if (id) engine.select({ kind: 'furniture', id });
   });
+
+  /**
+   * On a phone the properties live in a sheet that is closed by default, so
+   * tapping an item selected it and then appeared to do nothing — you had to
+   * know to tap "Selected" as a second step. Surface the sheet on the first
+   * selection of a gesture instead.
+   *
+   * Only when the person taps the canvas: opening it during a drag would cover
+   * the thing they are dragging, and doing it for a pick from the object list
+   * would fight the panel they are already looking at.
+   */
+  function revealPropertiesOnMobile(selection: Selection | null): void {
+    if (!selection || !isMobile()) return;
+    if (document.activeElement?.closest('[data-panel]')) return;
+    const panel = panels.find((p) => p.dataset.panel === 'properties');
+    if (panel?.dataset.open === 'true') return;
+    openPanel('properties');
+  }
 
   function syncSelection(selection: Selection | null): void {
     const item = engine.selectedItem;
