@@ -46,8 +46,16 @@ const allSchema = [organization, ...schema];
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {
+      /* A noindex page has no canonical to advertise — pairing the two sends
+         crawlers contradictory instructions about a URL that should not be in
+         the index at all. The 404 page is the only page this affects. */
+      noindex ? (
+        <meta name="robots" content="noindex, follow" />
+      ) : (
+        <link rel="canonical" href={canonicalUrl} />
+      )
+    }
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
