@@ -13,24 +13,12 @@
   # Netlify moves its default.
   NODE_VERSION = "22"
 
-# Astro fingerprints everything it emits into /_astro, so those files can be
-# cached forever. Any change produces a new filename.
-[[headers]]
-  for = "/_astro/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+# ORDER MATTERS. When several rules match a path Netlify merges them, and for a
+# duplicated header name the LAST match wins. So the catch-all goes first and
+# the specific overrides follow it.
 
-[[headers]]
-  for = "/*.svg"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
-[[headers]]
-  for = "/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
-# HTML is revalidated on every request so a redeploy is picked up immediately.
+# Baseline for every response: security headers, and HTML revalidated on each
+# request so a redeploy is picked up immediately.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -42,3 +30,22 @@
     # locked down hard. 'unsafe-inline' is required for Astro's inlined styles
     # and the small inline bootstrap scripts.
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+
+# Astro fingerprints everything it emits into /_astro, so those files can be
+# cached forever — any change produces a new filename.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Icons and social images change rarely and are not fingerprinted, so they get a
+# day of caching rather than forever.
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
