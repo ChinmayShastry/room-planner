@@ -42,6 +42,17 @@ dashboard settings.
 Pull requests get their own preview URL. To roll back, publish an earlier deploy from the
 [deploys page](https://app.netlify.com/projects/plan-my-room/deploys) — every build is kept.
 
+### Gotcha: contributor verification on private repos
+
+This repository is private and the Netlify account is on the free plan, which enables **strict
+contributor verification**. Netlify blocks any build whose commit has an author *or co-author* it
+cannot match to a verified member of the Netlify team, failing with:
+
+> Build blocked: This commit is from an unrecognized Git contributor.
+
+`Co-Authored-By:` trailers count. If builds start failing this way, either drop the extra trailer,
+add that identity to the Netlify team, make the repository public, or move off the free plan.
+
 ### Moving to a custom domain
 
 Two files carry the domain. Change both, then redeploy:
