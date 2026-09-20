@@ -45,13 +45,22 @@ Pull requests get their own preview URL. To roll back, publish an earlier deploy
 ### Gotcha: contributor verification on private repos
 
 This repository is private and the Netlify account is on the free plan, which enables **strict
-contributor verification**. Netlify blocks any build whose commit has an author *or co-author* it
-cannot match to a verified member of the Netlify team, failing with:
+contributor verification**. Netlify matches the **commit author's email** against verified members of
+the Netlify team and blocks anything it cannot match:
 
 > Build blocked: This commit is from an unrecognized Git contributor.
 
-`Co-Authored-By:` trailers count. If builds start failing this way, either drop the extra trailer,
-add that identity to the Netlify team, make the repository public, or move off the free plan.
+The catch is that GitHub's privacy address (`<id>+<user>@users.noreply.github.com`) does not match
+the email on the Netlify account, so every push is rejected — and once the repo is linked this
+applies to manual uploads too, not just pushes. Commits here therefore use the email registered with
+Netlify:
+
+```bash
+git config user.email you@example.com   # repo-local, matching your Netlify account
+```
+
+The other ways out are making the repository public, which lifts the restriction entirely, or moving
+off the free plan.
 
 ### Moving to a custom domain
 
